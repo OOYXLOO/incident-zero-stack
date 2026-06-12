@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Incident Zero Stack</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">H0 backup prototype</p>
+          <h1>Incident Zero Stack</h1>
+          <p class="lede">A database-backed incident response workspace for alert intake, containment tasks, evidence, audit events, and executive handoff.</p>
+        </div>
+        <div class="hero-status" aria-label="proof gates">
+          <span>Local review build</span>
+          <span>No secrets stored</span>
+          <span>AWS proof required</span>
+        </div>
+      </section>
+
+      <section class="main-grid">
+        <article class="panel case-panel">
+          <div class="panel-heading">
+            <span class="kicker">Case</span>
+            <strong id="case-title">Loading case</strong>
+          </div>
+          <div class="stats">
+            <div><span>Severity</span><b id="severity">...</b></div>
+            <div><span>Risk</span><b id="risk">...</b></div>
+            <div><span>System</span><b id="system">...</b></div>
+          </div>
+          <ul id="signals" class="list"></ul>
+        </article>
+
+        <article class="panel">
+          <div class="panel-heading">
+            <span class="kicker">Response</span>
+            <strong>Task board</strong>
+          </div>
+          <div id="tasks" class="stack"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-heading">
+            <span class="kicker">Database</span>
+            <strong>DynamoDB records</strong>
+          </div>
+          <div id="records" class="record-list"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-heading">
+            <span class="kicker">Audit</span>
+            <strong>Timeline</strong>
+          </div>
+          <ol id="audit" class="timeline"></ol>
+        </article>
+      </section>
+
+      <section class="proof-band">
+        <div>
+          <h2>Cloud proof gate</h2>
+          <p>The app is ready for local review, but H0 requires real Vercel/v0 plus AWS Database usage proof before any final submission claim.</p>
+        </div>
+        <div id="gates" class="gate-grid"></div>
+      </section>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
