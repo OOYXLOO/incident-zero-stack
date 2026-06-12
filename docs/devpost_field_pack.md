@@ -38,6 +38,18 @@ npm start
 
 Then open `http://127.0.0.1:8794/`.
 
+## Gallery Assets
+
+Upload order:
+
+1. `docs/cover.png`
+2. `docs/desktop-preview.png`
+3. `docs/mobile-preview.png`
+
+Caption:
+
+Local no-secret review build. Live Vercel/v0 deployment, AWS Database usage, AWS proof screenshot, and Devpost final submit remain account-owner gates.
+
 ## Honest Gate Statement
 
 This local package does not claim live AWS Database usage, Vercel deployment, or v0 generation. Those must be completed through official account-owner flows before final Devpost submission.

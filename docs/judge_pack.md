@@ -13,6 +13,13 @@ Incident Zero Stack is a database-backed security incident response workspace fo
 5. Open `http://127.0.0.1:8794/api/case`.
 6. Open `http://127.0.0.1:8794/api/schema`.
 
+## Gallery Assets
+
+- `docs/cover.png`
+- `docs/desktop-preview.png`
+- `docs/mobile-preview.png`
+- Upload order and captions: `docs/devpost_gallery_assets.md`
+
 ## What Is Real Now
 
 - Deterministic incident workflow.

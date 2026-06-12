@@ -25,6 +25,7 @@ Then open `http://127.0.0.1:8794/`.
 - `/api/case` returns a full incident case, database-shaped records, audit trail, and proof gates.
 - `/api/schema` returns the DynamoDB single-table schema proposal.
 - The browser UI shows triage queue, response plan, database records, audit timeline, and cloud proof gates.
+- `docs/devpost_gallery_assets.md` lists upload-ready local screenshots: `cover.png`, `desktop-preview.png`, and `mobile-preview.png`.
 
 ## Honest Scope
 
