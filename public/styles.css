@@ -370,6 +370,7 @@ h3 {
 .update-list,
 .window-list,
 .gate-list,
+.storage-plan,
 .architecture-map {
   display: grid;
   gap: 10px;
@@ -382,6 +383,7 @@ h3 {
 .update-row,
 .window-row,
 .gate-row,
+.storage-row,
 .arch-node,
 .arch-edge,
 .timeline li {
@@ -497,6 +499,39 @@ code {
 
 .window-row small {
   grid-column: 1 / -1;
+}
+
+.storage-row {
+  display: grid;
+  gap: 5px;
+}
+
+.storage-row span {
+  color: #2d3a46;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.text-link {
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.handoff-preview {
+  max-height: 290px;
+  margin: 0;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  background: #101820;
+  color: #e8f2ff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
 }
 
 .timeline {

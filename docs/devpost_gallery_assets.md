@@ -16,7 +16,12 @@ Use these only after eligibility, Vercel/v0 deployment, AWS Database proof, and 
    - Full-page desktop review screenshot.
    - Shows case intake, task board, DynamoDB-shaped records, audit timeline, and cloud proof gates.
 
-3. `docs/mobile-preview.png`
+3. `docs/architecture.svg`
+   - 1400x820
+   - Architecture diagram for the required project explanation.
+   - Shows browser cockpit, Node API, incident model, DynamoDB design, record entities, and account-owner cloud gate.
+
+4. `docs/mobile-preview.png`
    - 375x3127
    - Full-page mobile review screenshot.
    - Demonstrates the layout remains readable on a narrow viewport.

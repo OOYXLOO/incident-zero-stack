@@ -448,6 +448,75 @@ function architectureQueries(alertInput) {
   ];
 }
 
+function handoffPacket(alertInput) {
+  const alert = normalizeAlert(alertInput);
+  const risk = riskScore(alert);
+  const windows = responseWindows(alert);
+  const evidence = evidenceItems(alert);
+  const tasks = responseTasks(alert);
+  const nextUpdate = windows.find((window) => window.label === "Stakeholder update") || windows[0];
+  const openTasks = tasks.filter((task) => task.status !== "complete");
+  const summary = `${alert.severity.toUpperCase()} ${alert.title}: risk ${risk}/100, ${alert.contained ? "contained" : "containment pending"}, ${evidence.length} evidence records, ${openTasks.length} open response tasks.`;
+  const markdown = [
+    `# ${alert.caseId} Executive Handoff`,
+    "",
+    "## Executive Summary",
+    "",
+    summary,
+    "",
+    "## Current Scope",
+    "",
+    `- System: ${alert.impactedSystem}`,
+    `- Owner: ${alert.owner}`,
+    `- Affected scope: ${alert.impactedUsers}`,
+    `- Customer impact: ${alert.customerImpact ? "yes" : "no"}`,
+    `- Estimated exposure: $${alert.revenueAtRiskUsd.toLocaleString("en-US")}`,
+    "",
+    "## Evidence",
+    "",
+    ...evidence.map((item) => `- ${item.status} (${item.confidence}%): ${item.detail}`),
+    "",
+    "## Open Actions",
+    "",
+    ...openTasks.map((task) => `- [${task.status}] ${task.owner}: ${task.action}`),
+    "",
+    "## Next Update",
+    "",
+    `${nextUpdate.label}: ${nextUpdate.dueAt}`
+  ].join("\n");
+
+  return {
+    filename: `${alert.caseId.toLowerCase()}-handoff.md`,
+    summary,
+    nextUpdateAt: nextUpdate.dueAt,
+    markdown
+  };
+}
+
+function storageAdapterPlan(alertInput) {
+  const alert = normalizeAlert(alertInput);
+  const records = databaseRecords(alert);
+  const entityCounts = records.reduce((counts, record) => {
+    counts[record.entity] = (counts[record.entity] || 0) + 1;
+    return counts;
+  }, {});
+
+  return {
+    adapter: "local-memory",
+    liveAdapterTarget: "aws-dynamodb",
+    tableName: DYNAMODB_SCHEMA.tableName,
+    recordCount: records.length,
+    entityCounts,
+    writeStrategy: "Batch write incident packet by PK/SK, then append audit and evidence events as immutable records",
+    readStrategy: "Load one incident by PK; use GSI1 for active severity queue and GSI2 for owner due work",
+    safety: {
+      noCredentialsInCode: true,
+      noSecretsStored: true,
+      accountOwnerProvisioningRequired: true
+    }
+  };
+}
+
 function buildCase(alertInput) {
   const alert = normalizeAlert(alertInput);
   const risk = riskScore(alert);
@@ -464,6 +533,8 @@ function buildCase(alertInput) {
     records: databaseRecords(alert),
     schema: DYNAMODB_SCHEMA,
     architectureQueries: architectureQueries(alert),
+    storagePlan: storageAdapterPlan(alert),
+    handoff: handoffPacket(alert),
     gates: {
       noSecretsStored: true,
       localPrototypeReady: true,
@@ -484,6 +555,7 @@ module.exports = {
   buildCase,
   databaseRecords,
   evidenceItems,
+  handoffPacket,
   metricCards,
   normalizeAlert,
   responseTasks,
@@ -491,5 +563,6 @@ module.exports = {
   riskScore,
   scenarioList,
   severityRank,
+  storageAdapterPlan,
   stakeholderUpdates
 };

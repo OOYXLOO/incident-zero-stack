@@ -149,6 +149,23 @@ function renderRecords(records) {
   setText("record-count", `${records.length} records`);
 }
 
+function renderStoragePlan(plan) {
+  const rows = [
+    ["Adapter", plan.adapter],
+    ["Live target", plan.liveAdapterTarget],
+    ["Table", plan.tableName],
+    ["Records", String(plan.recordCount)],
+    ["Writes", plan.writeStrategy],
+    ["Reads", plan.readStrategy]
+  ];
+  replace("storage-plan", rows.map(([label, value]) => {
+    const row = node("div", "storage-row");
+    row.append(node("strong", "", label));
+    row.append(node("span", "", value));
+    return row;
+  }));
+}
+
 function renderEvidence(items) {
   replace("evidence", items.map((item) => {
     const row = node("article", "evidence-row");
@@ -209,6 +226,11 @@ function renderGates(gates) {
   }));
 }
 
+function renderHandoff(handoff) {
+  const lines = handoff.markdown.split("\n").slice(0, 16).join("\n");
+  $("handoff").textContent = lines;
+}
+
 function render(data) {
   const alert = data.alert;
   const stateLabel = alert.contained ? "Contained" : "Active";
@@ -224,9 +246,11 @@ function render(data) {
   renderTasks(data.tasks);
   renderWindows(data.windows);
   renderRecords(data.records);
+  renderStoragePlan(data.storagePlan);
   renderEvidence(data.evidence);
   renderQueries(data.architectureQueries);
   renderUpdates(data.updates);
+  renderHandoff(data.handoff);
   renderAudit(data.audit);
   renderGates(data.gates);
 }

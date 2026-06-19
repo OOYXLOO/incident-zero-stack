@@ -4,6 +4,7 @@ const fs = require("fs");
 const http = require("http");
 const path = require("path");
 const { buildCase, DYNAMODB_SCHEMA, scenarioList } = require("./incidentZero");
+const { createStoragePreview } = require("./storage");
 
 const ROOT = path.resolve(__dirname, "..");
 const PUBLIC_DIR = path.join(ROOT, "public");
@@ -92,6 +93,34 @@ async function handleRequest(request, response) {
 
   if (url.pathname === "/api/scenarios") {
     sendJson(response, 200, { scenarios: scenarioList() });
+    return;
+  }
+
+  if (url.pathname === "/api/handoff" && request.method === "GET") {
+    send(response, 200, buildCase(queryToCaseInput(url)).handoff.markdown, "text/markdown; charset=utf-8");
+    return;
+  }
+
+  if (url.pathname === "/api/handoff" && request.method === "POST") {
+    try {
+      send(response, 200, buildCase(await readJsonBody(request)).handoff.markdown, "text/markdown; charset=utf-8");
+    } catch (error) {
+      sendJson(response, 400, { ok: false, error: error.message });
+    }
+    return;
+  }
+
+  if (url.pathname === "/api/storage-preview" && request.method === "GET") {
+    sendJson(response, 200, createStoragePreview(queryToCaseInput(url)));
+    return;
+  }
+
+  if (url.pathname === "/api/storage-preview" && request.method === "POST") {
+    try {
+      sendJson(response, 200, createStoragePreview(await readJsonBody(request)));
+    } catch (error) {
+      sendJson(response, 400, { ok: false, error: error.message });
+    }
     return;
   }
 

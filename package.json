@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/server.js",
     "test": "node tests/incidentZero.test.js",
-    "check": "node --check src/incidentZero.js && node --check src/server.js && node --check public/app.js && node --check tests/incidentZero.test.js"
+    "check": "node --check src/incidentZero.js && node --check src/storage.js && node --check src/server.js && node --check public/app.js && node --check tests/incidentZero.test.js"
   },
   "keywords": [
     "aws-dynamodb",

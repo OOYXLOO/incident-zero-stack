@@ -6,12 +6,15 @@ const {
   DYNAMODB_SCHEMA,
   buildCase,
   databaseRecords,
+  handoffPacket,
   normalizeAlert,
   responseTasks,
   riskScore,
-  scenarioList
+  scenarioList,
+  storageAdapterPlan
 } = require("../src/incidentZero");
 const { handleRequest, safePublicPath } = require("../src/server");
+const { LocalIncidentStore, createStoragePreview, findCredentialLikeValues } = require("../src/storage");
 
 function testDefaultCase() {
   const result = buildCase();
@@ -23,6 +26,8 @@ function testDefaultCase() {
   assert.equal(result.audit.length, 5);
   assert.equal(result.updates.length, 3);
   assert.equal(result.architectureQueries.length, 3);
+  assert.equal(result.storagePlan.liveAdapterTarget, "aws-dynamodb");
+  assert.ok(result.handoff.markdown.includes("## Executive Summary"));
   assert.equal(result.gates.noSecretsStored, true);
   assert.equal(result.gates.localPrototypeReady, true);
   assert.equal(result.gates.liveAwsDatabaseClaimed, false);
@@ -49,6 +54,28 @@ function testDynamoRecords() {
   assert.equal(DYNAMODB_SCHEMA.partitionKey, "PK");
   assert.equal(DYNAMODB_SCHEMA.sortKey, "SK");
   assert.equal(DYNAMODB_SCHEMA.indexes.length, 2);
+}
+
+function testHandoffAndStoragePlan() {
+  const handoff = handoffPacket({ scenarioId: "payments" });
+  assert.equal(handoff.filename, "case-2026-0619-02-handoff.md");
+  assert.ok(handoff.markdown.includes("Duplicate payment webhook replay"));
+
+  const plan = storageAdapterPlan({ scenarioId: "payments" });
+  assert.equal(plan.tableName, "IncidentZeroCases");
+  assert.ok(plan.recordCount >= 15);
+  assert.equal(plan.safety.noCredentialsInCode, true);
+
+  const preview = createStoragePreview({ scenarioId: "data" });
+  assert.equal(preview.write.tableName, "IncidentZeroCases");
+  assert.ok(preview.sampleRecords.length > 0);
+
+  const store = new LocalIncidentStore();
+  assert.throws(() => store.putCase({
+    caseId: "CASE-BAD",
+    records: [{ PK: "CASE#CASE-BAD", SK: "CASE#META", entity: "CASE", token: "AKIA1234567890ABCDEF" }]
+  }), /credential-like/);
+  assert.deepEqual(findCredentialLikeValues({ ok: "public-value" }), []);
 }
 
 function testNormalizationAndRisk() {
@@ -123,7 +150,7 @@ async function testHttpApi() {
     assert.equal(scenarios.status, 200);
     assert.equal(scenarios.body.scenarios.length, 3);
 
-    const custom = await requestJson(server, "/api/case", {
+  const custom = await requestJson(server, "/api/case", {
       method: "POST",
       body: {
         scenarioId: "data",
@@ -136,6 +163,11 @@ async function testHttpApi() {
     assert.equal(custom.body.alert.scenarioId, "data");
     assert.equal(custom.body.alert.severity, "high");
     assert.equal(custom.body.alert.evidenceConfidence, 92);
+    assert.ok(custom.body.handoff.markdown.includes("Executive Handoff"));
+
+    const storage = await requestJson(server, "/api/storage-preview?scenario=payments");
+    assert.equal(storage.status, 200);
+    assert.equal(storage.body.storagePlan.liveAdapterTarget, "aws-dynamodb");
   } finally {
     await new Promise((resolve) => server.close(resolve));
   }
@@ -145,6 +177,7 @@ async function main() {
   testDefaultCase();
   testScenarioLibrary();
   testDynamoRecords();
+  testHandoffAndStoragePlan();
   testNormalizationAndRisk();
   testTaskShape();
   testPathGuard();
