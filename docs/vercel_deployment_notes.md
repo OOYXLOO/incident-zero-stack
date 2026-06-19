@@ -57,4 +57,14 @@ INCIDENT_ZERO_PUBLIC_URL=<deployed-public-url>
 
 The `/api/cloud-readiness` endpoint reports whether these values are present, but it does not return secret values.
 
+## Account-Owner Live Database Proof
+
+Run this only after the account owner approves a live database write:
+
+```bash
+INCIDENT_ZERO_ALLOW_LIVE_WRITE=1 npm run verify:dynamodb
+```
+
+The script writes one deterministic incident packet to the configured table and prints only a redacted proof summary.
+
 Do not commit credentials or screenshots with private account information.

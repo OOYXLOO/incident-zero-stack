@@ -22,6 +22,7 @@ const handoffFunction = require("../api/handoff");
 const storagePreviewFunction = require("../api/storage-preview");
 const { LocalIncidentStore, createStoragePreview, findCredentialLikeValues } = require("../src/storage");
 const { normalizeBaseUrl, run: runPublicVerification } = require("../scripts/verify-public");
+const { redact, requireLiveWriteApproval } = require("../scripts/verify-dynamodb-live");
 
 function testDefaultCase() {
   const result = buildCase();
@@ -156,6 +157,13 @@ function testPathGuard() {
 function testPublicVerifierHelpers() {
   assert.equal(normalizeBaseUrl("https://example.com/demo/"), "https://example.com/demo");
   assert.throws(() => normalizeBaseUrl("ftp://example.com"), /http/);
+}
+
+function testLiveProofGuards() {
+  assert.throws(() => requireLiveWriteApproval({}), /Refusing live DynamoDB write/);
+  assert.doesNotThrow(() => requireLiveWriteApproval({ INCIDENT_ZERO_ALLOW_LIVE_WRITE: "1" }));
+  assert.equal(redact("AKIAEXAMPLE123456789"), "AK****89");
+  assert.equal(redact("abc"), "****");
 }
 
 function requestJson(server, path, options = {}) {
@@ -303,6 +311,7 @@ async function main() {
   testTaskShape();
   testPathGuard();
   testPublicVerifierHelpers();
+  testLiveProofGuards();
   await testHttpApi();
   await testVercelFunctions();
   console.log("incident zero tests passed");

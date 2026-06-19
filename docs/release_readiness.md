@@ -9,6 +9,7 @@ Use this checklist before creating a public repository, deployment, or public pr
 - [ ] Browser smoke passes for dashboard, scenario switch, `Run demo`, storage plan, and handoff preview.
 - [ ] `/api/cloud-readiness` reports local review ready and lists only missing account-owner gates.
 - [ ] `npm run verify:public -- <public-url>` passes after deployment.
+- [ ] `npm run verify:dynamodb` is run only with account-owner approval and `INCIDENT_ZERO_ALLOW_LIVE_WRITE=1`.
 - [ ] Local public-wording scan has no planning-language hits inside this repository.
 
 ## Public Assets
