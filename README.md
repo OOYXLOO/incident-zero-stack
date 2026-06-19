@@ -10,6 +10,7 @@ The prototype keeps incident state in deterministic DynamoDB-shaped records so r
 - Local API for rebuilding an incident from adjustable risk inputs.
 - Browser UI with action board, SLA windows, evidence ledger, database records, access patterns, stakeholder updates, audit timeline, and cloud proof gates.
 - No credentials, tokens, cookies, billing data, account-owner documents, or private customer data.
+- CI-ready checks for syntax, deterministic tests, and public wording guard.
 
 ## Quick Start
 

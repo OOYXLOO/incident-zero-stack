@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Syntax check
+        run: npm run check
+
+      - name: Unit and API tests
+        run: npm test
+
+      - name: Public wording guard
+        shell: bash
+        run: |
+          if grep -RInE 'prize|payout|money-goal|USD 200|赚钱|奖金' . \
+            --exclude-dir=.git \
+            --exclude=ci.yml; then
+            echo "Public repository contains planning-language terms."
+            exit 1
+          fi
