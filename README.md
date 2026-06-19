@@ -9,7 +9,7 @@ The prototype keeps incident state in deterministic DynamoDB-shaped records so r
 - Multi-scenario cockpit for identity, payment, and data-export incidents.
 - Local API for rebuilding an incident from adjustable risk inputs.
 - Browser UI with action board, SLA windows, evidence ledger, database records, access patterns, stakeholder updates, audit timeline, and cloud proof gates.
-- No credentials, tokens, cookies, billing data, payout data, or private customer data.
+- No credentials, tokens, cookies, billing data, account-owner documents, or private customer data.
 
 ## Quick Start
 

@@ -11,10 +11,10 @@ This package is a local no-secret prototype. It must not be submitted as a live 
 5. Wire the app to the real database without committing secrets.
 6. Capture legitimate AWS Database usage proof, such as Vercel Storage configuration, AWS Console resource screenshot, or equivalent allowed proof.
 7. Add the proof to the Devpost submission according to the official rules.
-8. Complete Devpost final submission and any payout/tax/KYC flow personally.
+8. Complete Devpost final submission and any account-owner follow-up steps personally.
 
 ## No-Go
 
 - Do not fabricate AWS screenshots or resource IDs.
-- Do not paste AWS keys, Vercel tokens, cookies, billing data, payout data, tax forms, or KYC documents into chat.
+- Do not paste AWS keys, Vercel tokens, cookies, billing data, account-owner documents, tax forms, or identity documents into chat.
 - Do not claim live AWS Database usage until a real resource exists and the proof screenshot is available.

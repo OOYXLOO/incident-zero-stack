@@ -33,7 +33,7 @@ Incident Zero Stack is a database-backed security incident response workspace fo
 - AWS Database creation and proof screenshot.
 - Any cloud credentials, billing controls, or credits.
 - Devpost final submission.
-- Prize claim, payout, tax, and KYC.
+- Account-owner follow-up steps after submission.
 
 ## H0 Positioning
 

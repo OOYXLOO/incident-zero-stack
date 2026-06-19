@@ -30,4 +30,4 @@ Local no-secret review build. Live Vercel/v0 deployment, AWS Database usage, AWS
 ## No-Go
 
 - Do not claim these screenshots show a live AWS Database or Vercel deployment.
-- Do not upload screenshots containing AWS keys, Vercel tokens, billing data, payout data, tax forms, KYC documents, or private logs.
+- Do not upload screenshots containing AWS keys, Vercel tokens, billing data, account-owner documents, tax forms, identity documents, or private logs.
