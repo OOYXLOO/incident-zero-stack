@@ -64,6 +64,7 @@
 
         <div class="control-actions">
           <button id="rebuild" type="button">Rebuild case</button>
+          <button id="run-demo" type="button">Run demo</button>
           <button id="export-json" type="button" class="secondary">Export JSON</button>
         </div>
       </aside>
@@ -135,6 +136,24 @@
               </div>
             </div>
             <div id="evidence" class="evidence-list"></div>
+          </article>
+
+          <article class="panel span-2">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Architecture</p>
+                <h3>Zero-stack data path</h3>
+              </div>
+            </div>
+            <div class="architecture-map" aria-label="application architecture">
+              <div class="arch-node">Browser cockpit</div>
+              <div class="arch-edge">case rebuild</div>
+              <div class="arch-node">Node API</div>
+              <div class="arch-edge">single-table records</div>
+              <div class="arch-node">DynamoDB design</div>
+              <div class="arch-edge">auditable packet</div>
+              <div class="arch-node">Handoff export</div>
+            </div>
           </article>
 
           <article class="panel">

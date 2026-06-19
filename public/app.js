@@ -244,6 +244,34 @@ function downloadJson() {
   URL.revokeObjectURL(url);
 }
 
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function applyPayload(payload) {
+  const updated = await fetchCase(payload);
+  state.currentCase = updated;
+  writeForm(updated);
+  render(updated);
+  updateScenarioButtons();
+}
+
+async function runDemo() {
+  const button = $("run-demo");
+  button.disabled = true;
+  button.textContent = "Running";
+  try {
+    await applyPayload({ scenarioId: "identity", contained: false, evidenceConfidence: 58, impactedUsers: 12, revenueAtRiskUsd: 3200 });
+    await wait(650);
+    await applyPayload({ scenarioId: "identity", contained: false, evidenceConfidence: 89, impactedUsers: 48, revenueAtRiskUsd: 12400, customerImpact: true });
+    await wait(650);
+    await applyPayload({ scenarioId: "identity", contained: true, evidenceConfidence: 94, impactedUsers: 48, revenueAtRiskUsd: 12400, customerImpact: true });
+  } finally {
+    button.disabled = false;
+    button.textContent = "Run demo";
+  }
+}
+
 async function main() {
   const scenarioResponse = await fetch("/api/scenarios");
   const scenarioData = await scenarioResponse.json();
@@ -258,12 +286,10 @@ async function main() {
   });
 
   $("rebuild").addEventListener("click", async () => {
-    const updated = await fetchCase(readForm());
-    state.currentCase = updated;
-    writeForm(updated);
-    render(updated);
-    updateScenarioButtons();
+    await applyPayload(readForm());
   });
+
+  $("run-demo").addEventListener("click", runDemo);
 
   $("export-json").addEventListener("click", downloadJson);
 }
