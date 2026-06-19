@@ -1,6 +1,6 @@
 # Devpost Gallery Assets
 
-Generated: 2026-06-12
+Generated: 2026-06-19
 
 Use these only after eligibility, Vercel/v0 deployment, AWS Database proof, and final submission gates are cleared.
 
@@ -12,7 +12,7 @@ Use these only after eligibility, Vercel/v0 deployment, AWS Database proof, and 
    - Shows the core Incident Zero Stack dashboard and AWS proof gate.
 
 2. `docs/desktop-preview.png`
-   - 1265x1687
+   - 1440x2200
    - Full-page desktop review screenshot.
    - Shows case intake, task board, DynamoDB-shaped records, audit timeline, and cloud proof gates.
 
@@ -22,7 +22,7 @@ Use these only after eligibility, Vercel/v0 deployment, AWS Database proof, and 
    - Shows browser cockpit, Node API, incident model, DynamoDB design, record entities, and account-owner cloud gate.
 
 4. `docs/mobile-preview.png`
-   - 375x3127
+   - 390x3000
    - Full-page mobile review screenshot.
    - Demonstrates the layout remains readable on a narrow viewport.
 
