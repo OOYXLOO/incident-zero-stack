@@ -23,6 +23,12 @@ npm test
 npm run check
 ```
 
+## Post-Deploy Check
+
+```bash
+npm run verify:public -- https://<deployed-project>.vercel.app
+```
+
 ## Expected Public Paths
 
 ```text

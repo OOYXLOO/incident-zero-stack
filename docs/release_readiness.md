@@ -8,6 +8,7 @@ Use this checklist before creating a public repository, deployment, or public pr
 - [ ] `npm run check` passes.
 - [ ] Browser smoke passes for dashboard, scenario switch, `Run demo`, storage plan, and handoff preview.
 - [ ] `/api/cloud-readiness` reports local review ready and lists only missing account-owner gates.
+- [ ] `npm run verify:public -- <public-url>` passes after deployment.
 - [ ] Local public-wording scan has no planning-language hits inside this repository.
 
 ## Public Assets

@@ -21,6 +21,7 @@ const cloudReadinessFunction = require("../api/cloud-readiness");
 const handoffFunction = require("../api/handoff");
 const storagePreviewFunction = require("../api/storage-preview");
 const { LocalIncidentStore, createStoragePreview, findCredentialLikeValues } = require("../src/storage");
+const { normalizeBaseUrl, run: runPublicVerification } = require("../scripts/verify-public");
 
 function testDefaultCase() {
   const result = buildCase();
@@ -152,6 +153,11 @@ function testPathGuard() {
   assert.ok(indexPath.endsWith("public\\index.html") || indexPath.endsWith("public/index.html"));
 }
 
+function testPublicVerifierHelpers() {
+  assert.equal(normalizeBaseUrl("https://example.com/demo/"), "https://example.com/demo");
+  assert.throws(() => normalizeBaseUrl("ftp://example.com"), /http/);
+}
+
 function requestJson(server, path, options = {}) {
   const body = options.body ? JSON.stringify(options.body) : null;
   return new Promise((resolve, reject) => {
@@ -247,6 +253,9 @@ async function testHttpApi() {
     assert.equal(cloud.status, 200);
     assert.equal(cloud.body.okForLocalReview, true);
     assert.equal(cloud.body.safety.returnsSecretValues, false);
+
+    const verification = await runPublicVerification(`http://127.0.0.1:${server.address().port}`);
+    assert.deepEqual(verification.map((result) => result.ok), verification.map(() => true));
   } finally {
     await new Promise((resolve) => server.close(resolve));
   }
@@ -293,6 +302,7 @@ async function main() {
   testNormalizationAndRisk();
   testTaskShape();
   testPathGuard();
+  testPublicVerifierHelpers();
   await testHttpApi();
   await testVercelFunctions();
   console.log("incident zero tests passed");
