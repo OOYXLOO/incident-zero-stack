@@ -38,11 +38,14 @@ GET  /api/schema
 ## Project Shape
 
 ```text
+api/      Vercel serverless API entrypoints
 public/   Browser cockpit
 src/      Incident model and local server
 tests/    Deterministic model and HTTP checks
 docs/     Review assets and deployment notes
 ```
+
+The same API logic powers local `src/server.js` and Vercel functions under `api/`.
 
 ## Cloud Boundary
 

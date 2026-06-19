@@ -3,13 +3,11 @@
 const fs = require("fs");
 const http = require("http");
 const path = require("path");
-const { buildCase, DYNAMODB_SCHEMA, scenarioList } = require("./incidentZero");
-const { createStoragePreview } = require("./storage");
+const { handleApiRequest } = require("./apiCore");
 
 const ROOT = path.resolve(__dirname, "..");
 const PUBLIC_DIR = path.join(ROOT, "public");
 const PORT = Number(process.env.PORT || 8794);
-const MAX_BODY_BYTES = 32 * 1024;
 
 const CONTENT_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -38,103 +36,34 @@ function safePublicPath(urlPath) {
   return resolved;
 }
 
-function readJsonBody(request) {
+function readBodyText(request) {
   return new Promise((resolve, reject) => {
     let body = "";
     request.on("data", (chunk) => {
       body += chunk;
-      if (Buffer.byteLength(body) > MAX_BODY_BYTES) {
-        reject(new Error("Request body too large"));
-        request.destroy();
-      }
     });
     request.on("end", () => {
-      if (!body.trim()) {
-        resolve({});
-        return;
-      }
-      try {
-        resolve(JSON.parse(body));
-      } catch (error) {
-        reject(error);
-      }
+      resolve(body);
     });
     request.on("error", reject);
   });
 }
 
-function queryToCaseInput(url) {
-  return {
-    scenarioId: url.searchParams.get("scenario") || undefined,
-    severity: url.searchParams.get("severity") || undefined,
-    evidenceConfidence: url.searchParams.get("confidence") || undefined,
-    impactedUsers: url.searchParams.get("users") || undefined,
-    customerImpact: url.searchParams.get("customerImpact") || undefined,
-    contained: url.searchParams.get("contained") || undefined
-  };
-}
-
 async function handleRequest(request, response) {
   const url = new URL(request.url, `http://${request.headers.host || "127.0.0.1"}`);
 
-  if (url.pathname === "/api/case" && request.method === "GET") {
-    sendJson(response, 200, buildCase(queryToCaseInput(url)));
-    return;
-  }
-
-  if (url.pathname === "/api/case" && request.method === "POST") {
+  if (url.pathname.startsWith("/api/")) {
     try {
-      sendJson(response, 200, buildCase(await readJsonBody(request)));
+      const result = handleApiRequest({
+        method: request.method,
+        pathname: url.pathname,
+        searchParams: url.searchParams,
+        bodyText: await readBodyText(request)
+      });
+      send(response, result.status, result.body, result.type);
     } catch (error) {
       sendJson(response, 400, { ok: false, error: error.message });
     }
-    return;
-  }
-
-  if (url.pathname === "/api/scenarios") {
-    sendJson(response, 200, { scenarios: scenarioList() });
-    return;
-  }
-
-  if (url.pathname === "/api/handoff" && request.method === "GET") {
-    send(response, 200, buildCase(queryToCaseInput(url)).handoff.markdown, "text/markdown; charset=utf-8");
-    return;
-  }
-
-  if (url.pathname === "/api/handoff" && request.method === "POST") {
-    try {
-      send(response, 200, buildCase(await readJsonBody(request)).handoff.markdown, "text/markdown; charset=utf-8");
-    } catch (error) {
-      sendJson(response, 400, { ok: false, error: error.message });
-    }
-    return;
-  }
-
-  if (url.pathname === "/api/storage-preview" && request.method === "GET") {
-    sendJson(response, 200, createStoragePreview(queryToCaseInput(url)));
-    return;
-  }
-
-  if (url.pathname === "/api/storage-preview" && request.method === "POST") {
-    try {
-      sendJson(response, 200, createStoragePreview(await readJsonBody(request)));
-    } catch (error) {
-      sendJson(response, 400, { ok: false, error: error.message });
-    }
-    return;
-  }
-
-  if (url.pathname === "/api/schema") {
-    sendJson(response, 200, DYNAMODB_SCHEMA);
-    return;
-  }
-
-  if (url.pathname === "/api/health") {
-    sendJson(response, 200, {
-      ok: true,
-      noSecretsStored: true,
-      localOnly: true
-    });
     return;
   }
 

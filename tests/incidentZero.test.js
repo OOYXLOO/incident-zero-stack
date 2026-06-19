@@ -14,6 +14,9 @@ const {
   storageAdapterPlan
 } = require("../src/incidentZero");
 const { handleRequest, safePublicPath } = require("../src/server");
+const caseFunction = require("../api/case");
+const handoffFunction = require("../api/handoff");
+const storagePreviewFunction = require("../api/storage-preview");
 const { LocalIncidentStore, createStoragePreview, findCredentialLikeValues } = require("../src/storage");
 
 function testDefaultCase() {
@@ -136,6 +139,33 @@ function requestJson(server, path, options = {}) {
   });
 }
 
+function invokeVercelFunction(fn, { method = "GET", url = "/", body } = {}) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    const response = {
+      statusCode: 200,
+      headers: {},
+      setHeader(name, value) {
+        this.headers[name.toLowerCase()] = value;
+      },
+      end(value) {
+        if (value !== undefined) chunks.push(String(value));
+        resolve({
+          status: this.statusCode,
+          headers: this.headers,
+          body: chunks.join("")
+        });
+      }
+    };
+
+    try {
+      fn({ method, url, body }, response);
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
 async function testHttpApi() {
   const server = http.createServer((request, response) => {
     handleRequest(request, response).catch((error) => {
@@ -173,6 +203,31 @@ async function testHttpApi() {
   }
 }
 
+async function testVercelFunctions() {
+  const caseResponse = await invokeVercelFunction(caseFunction, {
+    method: "POST",
+    url: "/api/case",
+    body: { scenarioId: "payments", contained: false }
+  });
+  assert.equal(caseResponse.status, 200);
+  assert.equal(JSON.parse(caseResponse.body).alert.scenarioId, "payments");
+
+  const handoffResponse = await invokeVercelFunction(handoffFunction, {
+    method: "GET",
+    url: "/api/handoff?scenario=data"
+  });
+  assert.equal(handoffResponse.status, 200);
+  assert.ok(handoffResponse.body.includes("Unusual data export"));
+  assert.equal(handoffResponse.headers["content-type"], "text/markdown; charset=utf-8");
+
+  const storageResponse = await invokeVercelFunction(storagePreviewFunction, {
+    method: "GET",
+    url: "/api/storage-preview?scenario=identity"
+  });
+  assert.equal(storageResponse.status, 200);
+  assert.equal(JSON.parse(storageResponse.body).storagePlan.liveAdapterTarget, "aws-dynamodb");
+}
+
 async function main() {
   testDefaultCase();
   testScenarioLibrary();
@@ -182,6 +237,7 @@ async function main() {
   testTaskShape();
   testPathGuard();
   await testHttpApi();
+  await testVercelFunctions();
   console.log("incident zero tests passed");
 }
 
