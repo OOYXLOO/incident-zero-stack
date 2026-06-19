@@ -370,6 +370,7 @@ h3 {
 .update-list,
 .window-list,
 .gate-list,
+.readiness-list,
 .storage-plan,
 .architecture-map {
   display: grid;
@@ -383,6 +384,7 @@ h3 {
 .update-row,
 .window-row,
 .gate-row,
+.readiness-row,
 .storage-row,
 .arch-node,
 .arch-edge,
@@ -400,7 +402,8 @@ h3 {
 
 .task-top,
 .evidence-header,
-.gate-row {
+.gate-row,
+.readiness-row {
   display: flex;
   justify-content: space-between;
   gap: 10px;
@@ -429,7 +432,8 @@ h3 {
 }
 
 .status.ready,
-.gate-row.ok {
+.gate-row.ok,
+.readiness-row.ok {
   color: var(--green);
   background: var(--green-soft);
   border-color: #c5e7d3;
@@ -438,7 +442,8 @@ h3 {
 .status.queued,
 .status.drafted,
 .status.complete,
-.gate-row.blocked {
+.gate-row.blocked,
+.readiness-row.blocked {
   color: var(--amber);
   background: var(--amber-soft);
   border-color: #f0d9a2;
@@ -506,7 +511,8 @@ code {
   gap: 5px;
 }
 
-.storage-row span {
+.storage-row span,
+.readiness-row span {
   color: #2d3a46;
   font-size: 13px;
   line-height: 1.4;

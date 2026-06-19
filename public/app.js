@@ -75,6 +75,12 @@ async function fetchCase(payload) {
   return response.json();
 }
 
+async function fetchCloudReadiness() {
+  const response = await fetch("/api/cloud-readiness");
+  if (!response.ok) throw new Error(`Cloud readiness request failed: ${response.status}`);
+  return response.json();
+}
+
 async function loadScenario(scenarioId) {
   state.currentScenario = scenarioId;
   const data = await fetchCase({ scenarioId });
@@ -226,6 +232,24 @@ function renderGates(gates) {
   }));
 }
 
+function renderCloudReadiness(readiness) {
+  const rows = [
+    ["Local review", readiness.okForLocalReview ? "ready" : "blocked"],
+    ["Cloud claim", readiness.okForPublicCloudClaim ? "ready" : "blocked"],
+    ["Adapter", readiness.database.adapter],
+    ["DynamoDB table", readiness.database.tableNameConfigured ? "configured" : "missing"],
+    ["AWS region", readiness.database.regionConfigured ? "configured" : "missing"],
+    ["Public URL", readiness.deployment.publicBaseUrlConfigured ? "configured" : "missing"]
+  ];
+  replace("cloud-readiness", rows.map(([label, value]) => {
+    const isOk = String(value).includes("ready") || String(value).includes("configured") || value === "local";
+    const row = node("div", `readiness-row ${isOk ? "ok" : "blocked"}`);
+    row.append(node("strong", "", label));
+    row.append(node("span", "", value));
+    return row;
+  }));
+}
+
 function renderHandoff(handoff) {
   const lines = handoff.markdown.split("\n").slice(0, 16).join("\n");
   $("handoff").textContent = lines;
@@ -304,6 +328,7 @@ async function main() {
   state.currentCase = data;
   writeForm(data);
   render(data);
+  renderCloudReadiness(await fetchCloudReadiness());
 
   $("confidence").addEventListener("input", () => {
     $("confidence-label").textContent = `${$("confidence").value}%`;

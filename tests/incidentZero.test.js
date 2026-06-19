@@ -2,6 +2,8 @@
 
 const assert = require("assert");
 const http = require("http");
+const { cloudReadiness } = require("../src/cloudReadiness");
+const { buildBatchWriteChunks, buildPutRequests, dynamoReadinessFromEnv } = require("../src/dynamoAdapter");
 const {
   DYNAMODB_SCHEMA,
   buildCase,
@@ -15,6 +17,7 @@ const {
 } = require("../src/incidentZero");
 const { handleRequest, safePublicPath } = require("../src/server");
 const caseFunction = require("../api/case");
+const cloudReadinessFunction = require("../api/cloud-readiness");
 const handoffFunction = require("../api/handoff");
 const storagePreviewFunction = require("../api/storage-preview");
 const { LocalIncidentStore, createStoragePreview, findCredentialLikeValues } = require("../src/storage");
@@ -79,6 +82,47 @@ function testHandoffAndStoragePlan() {
     records: [{ PK: "CASE#CASE-BAD", SK: "CASE#META", entity: "CASE", token: "AKIA1234567890ABCDEF" }]
   }), /credential-like/);
   assert.deepEqual(findCredentialLikeValues({ ok: "public-value" }), []);
+}
+
+function testDynamoAdapterAndCloudReadiness() {
+  const caseData = buildCase({ scenarioId: "identity" });
+  const putRequests = buildPutRequests(caseData.records, "IncidentZeroCases");
+  assert.equal(putRequests.length, caseData.records.length);
+  assert.equal(putRequests[0].TableName, "IncidentZeroCases");
+  assert.ok(putRequests[0].ConditionExpression.includes("attribute_not_exists"));
+
+  const chunks = buildBatchWriteChunks(caseData.records, "IncidentZeroCases");
+  assert.equal(chunks.length, 1);
+  assert.equal(chunks[0].RequestItems.IncidentZeroCases.length, caseData.records.length);
+
+  const missing = dynamoReadinessFromEnv({ INCIDENT_ZERO_STORAGE: "dynamodb" });
+  assert.equal(missing.liveWriteEnabled, false);
+  assert.ok(missing.missing.includes("INCIDENT_ZERO_DYNAMODB_TABLE"));
+  assert.ok(missing.missing.includes("AWS_REGION"));
+
+  const ready = dynamoReadinessFromEnv({
+    INCIDENT_ZERO_STORAGE: "dynamodb",
+    INCIDENT_ZERO_DYNAMODB_TABLE: "IncidentZeroCases",
+    AWS_REGION: "us-east-1"
+  });
+  assert.equal(ready.liveWriteEnabled, true);
+  assert.deepEqual(ready.missing, []);
+
+  const cloud = cloudReadiness({
+    INCIDENT_ZERO_STORAGE: "dynamodb",
+    INCIDENT_ZERO_DYNAMODB_TABLE: "IncidentZeroCases",
+    AWS_REGION: "us-east-1",
+    INCIDENT_ZERO_PUBLIC_URL: "https://example.invalid"
+  });
+  assert.equal(cloud.okForPublicCloudClaim, true);
+  assert.equal(cloud.safety.returnsSecretValues, false);
+  assert.ok(cloud.iamPolicyTemplate.Statement[0].Action.includes("dynamodb:Query"));
+
+  const localCloud = cloudReadiness({});
+  assert.equal(localCloud.okForPublicCloudClaim, false);
+  assert.ok(localCloud.missingAccountOwnerGates.includes("INCIDENT_ZERO_STORAGE=dynamodb"));
+  assert.ok(localCloud.missingAccountOwnerGates.includes("INCIDENT_ZERO_DYNAMODB_TABLE"));
+  assert.ok(localCloud.missingAccountOwnerGates.includes("AWS_REGION"));
 }
 
 function testNormalizationAndRisk() {
@@ -198,6 +242,11 @@ async function testHttpApi() {
     const storage = await requestJson(server, "/api/storage-preview?scenario=payments");
     assert.equal(storage.status, 200);
     assert.equal(storage.body.storagePlan.liveAdapterTarget, "aws-dynamodb");
+
+    const cloud = await requestJson(server, "/api/cloud-readiness");
+    assert.equal(cloud.status, 200);
+    assert.equal(cloud.body.okForLocalReview, true);
+    assert.equal(cloud.body.safety.returnsSecretValues, false);
   } finally {
     await new Promise((resolve) => server.close(resolve));
   }
@@ -226,6 +275,13 @@ async function testVercelFunctions() {
   });
   assert.equal(storageResponse.status, 200);
   assert.equal(JSON.parse(storageResponse.body).storagePlan.liveAdapterTarget, "aws-dynamodb");
+
+  const cloudResponse = await invokeVercelFunction(cloudReadinessFunction, {
+    method: "GET",
+    url: "/api/cloud-readiness"
+  });
+  assert.equal(cloudResponse.status, 200);
+  assert.equal(JSON.parse(cloudResponse.body).okForLocalReview, true);
 }
 
 async function main() {
@@ -233,6 +289,7 @@ async function main() {
   testScenarioLibrary();
   testDynamoRecords();
   testHandoffAndStoragePlan();
+  testDynamoAdapterAndCloudReadiness();
   testNormalizationAndRisk();
   testTaskShape();
   testPathGuard();

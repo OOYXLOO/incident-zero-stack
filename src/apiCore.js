@@ -1,6 +1,7 @@
 "use strict";
 
 const { buildCase, DYNAMODB_SCHEMA, scenarioList } = require("./incidentZero");
+const { cloudReadiness } = require("./cloudReadiness");
 const { createStoragePreview } = require("./storage");
 
 const MAX_BODY_BYTES = 32 * 1024;
@@ -74,6 +75,10 @@ function handleApiRequest({ method = "GET", pathname = "", searchParams = new UR
 
   if (endpoint === "schema") {
     return jsonBody(DYNAMODB_SCHEMA);
+  }
+
+  if (endpoint === "cloud-readiness") {
+    return jsonBody(cloudReadiness());
   }
 
   if (endpoint === "health") {
