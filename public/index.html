@@ -7,65 +7,176 @@
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <main class="shell">
-      <section class="hero">
-        <div>
-          <p class="eyebrow">H0 backup prototype</p>
-          <h1>Incident Zero Stack</h1>
-          <p class="lede">A database-backed incident response workspace for alert intake, containment tasks, evidence, audit events, and executive handoff.</p>
+    <main class="app-shell">
+      <aside class="control-rail" aria-label="incident controls">
+        <div class="brand-block">
+          <span class="product-mark">IZ</span>
+          <div>
+            <h1>Incident Zero Stack</h1>
+            <p>Response cockpit</p>
+          </div>
         </div>
-        <div class="hero-status" aria-label="proof gates">
-          <span>Local review build</span>
-          <span>No secrets stored</span>
-          <span>AWS proof required</span>
+
+        <section class="control-section">
+          <div class="section-label">Scenario</div>
+          <div id="scenario-buttons" class="scenario-buttons"></div>
+        </section>
+
+        <section class="control-section">
+          <label for="title">Incident title</label>
+          <input id="title" type="text" autocomplete="off">
+        </section>
+
+        <section class="control-section two-col">
+          <label for="severity">Severity</label>
+          <select id="severity">
+            <option value="critical">Critical</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </section>
+
+        <section class="control-section">
+          <label for="confidence">Evidence confidence <span id="confidence-label"></span></label>
+          <input id="confidence" type="range" min="0" max="100" step="1">
+        </section>
+
+        <section class="control-section two-col">
+          <label for="users">Affected scope</label>
+          <input id="users" type="number" min="0" max="1000000" step="1">
+        </section>
+
+        <section class="control-section two-col">
+          <label for="revenue">Exposure USD</label>
+          <input id="revenue" type="number" min="0" max="100000000" step="100">
+        </section>
+
+        <section class="control-section checks">
+          <label><input id="customer-impact" type="checkbox"> Customer impact</label>
+          <label><input id="contained" type="checkbox"> Contained</label>
+        </section>
+
+        <section class="control-section">
+          <label for="signals">Evidence signals</label>
+          <textarea id="signals" rows="7"></textarea>
+        </section>
+
+        <div class="control-actions">
+          <button id="rebuild" type="button">Rebuild case</button>
+          <button id="export-json" type="button" class="secondary">Export JSON</button>
         </div>
-      </section>
+      </aside>
 
-      <section class="main-grid">
-        <article class="panel case-panel">
-          <div class="panel-heading">
-            <span class="kicker">Case</span>
-            <strong id="case-title">Loading case</strong>
+      <section class="workbench">
+        <header class="top-bar">
+          <div>
+            <p class="eyebrow">Live case</p>
+            <h2 id="case-title">Loading case</h2>
           </div>
-          <div class="stats">
-            <div><span>Severity</span><b id="severity">...</b></div>
-            <div><span>Risk</span><b id="risk">...</b></div>
-            <div><span>System</span><b id="system">...</b></div>
+          <div class="status-strip" aria-label="case status">
+            <span id="case-id">...</span>
+            <span id="case-severity">...</span>
+            <span id="case-state">...</span>
           </div>
-          <ul id="signals" class="list"></ul>
-        </article>
+        </header>
 
-        <article class="panel">
-          <div class="panel-heading">
-            <span class="kicker">Response</span>
-            <strong>Task board</strong>
-          </div>
-          <div id="tasks" class="stack"></div>
-        </article>
+        <section class="hero-grid">
+          <article class="risk-panel">
+            <div class="risk-ring" id="risk-ring"><span id="risk-score">...</span></div>
+            <div>
+              <p class="eyebrow">Risk score</p>
+              <strong id="risk-detail">Recomputing</strong>
+              <p id="case-summary"></p>
+            </div>
+          </article>
 
-        <article class="panel">
-          <div class="panel-heading">
-            <span class="kicker">Database</span>
-            <strong>DynamoDB records</strong>
-          </div>
-          <div id="records" class="record-list"></div>
-        </article>
+          <div id="metric-grid" class="metric-grid"></div>
+        </section>
 
-        <article class="panel">
-          <div class="panel-heading">
-            <span class="kicker">Audit</span>
-            <strong>Timeline</strong>
-          </div>
-          <ol id="audit" class="timeline"></ol>
-        </article>
-      </section>
+        <section class="data-grid">
+          <article class="panel span-2">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Response</p>
+                <h3>Action board</h3>
+              </div>
+              <span id="ready-count" class="tag">0 ready</span>
+            </div>
+            <div id="tasks" class="task-board"></div>
+          </article>
 
-      <section class="proof-band">
-        <div>
-          <h2>Cloud proof gate</h2>
-          <p>The app is ready for local review, but H0 requires real Vercel/v0 plus AWS Database usage proof before any final submission claim.</p>
-        </div>
-        <div id="gates" class="gate-grid"></div>
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">SLA</p>
+                <h3>Clock windows</h3>
+              </div>
+            </div>
+            <div id="windows" class="window-list"></div>
+          </article>
+
+          <article class="panel span-2">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Database</p>
+                <h3>DynamoDB-shaped records</h3>
+              </div>
+              <span id="record-count" class="tag">0 records</span>
+            </div>
+            <div id="records" class="record-list"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Evidence</p>
+                <h3>Ledger</h3>
+              </div>
+            </div>
+            <div id="evidence" class="evidence-list"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Queries</p>
+                <h3>Access patterns</h3>
+              </div>
+            </div>
+            <div id="queries" class="query-list"></div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Updates</p>
+                <h3>Stakeholders</h3>
+              </div>
+            </div>
+            <div id="updates" class="update-list"></div>
+          </article>
+
+          <article class="panel span-2">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Audit</p>
+                <h3>Timeline</h3>
+              </div>
+            </div>
+            <ol id="audit" class="timeline"></ol>
+          </article>
+
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Proof</p>
+                <h3>Cloud gates</h3>
+              </div>
+            </div>
+            <div id="gates" class="gate-list"></div>
+          </article>
+        </section>
       </section>
     </main>
     <script src="app.js"></script>

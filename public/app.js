@@ -1,85 +1,274 @@
 "use strict";
 
-function text(id, value) {
-  document.getElementById(id).textContent = value;
+const state = {
+  currentScenario: "identity",
+  currentCase: null
+};
+
+function $(id) {
+  return document.getElementById(id);
 }
 
-function element(tag, className, value) {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (value !== undefined) node.textContent = value;
-  return node;
+function node(tag, className, text) {
+  const element = document.createElement(tag);
+  if (className) element.className = className;
+  if (text !== undefined) element.textContent = text;
+  return element;
 }
 
-function renderList(id, values) {
-  const root = document.getElementById(id);
-  root.replaceChildren();
-  values.forEach((value) => root.appendChild(element("li", "", value)));
+function money(value) {
+  return `$${Number(value || 0).toLocaleString("en-US")}`;
+}
+
+function shortDate(iso) {
+  return new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit"
+  }).format(new Date(iso));
+}
+
+function setText(id, value) {
+  $(id).textContent = value;
+}
+
+function replace(id, children) {
+  $(id).replaceChildren(...children);
+}
+
+function readForm() {
+  return {
+    scenarioId: state.currentScenario,
+    title: $("title").value,
+    severity: $("severity").value,
+    evidenceConfidence: Number($("confidence").value),
+    impactedUsers: Number($("users").value),
+    revenueAtRiskUsd: Number($("revenue").value),
+    customerImpact: $("customer-impact").checked,
+    contained: $("contained").checked,
+    signals: $("signals").value
+  };
+}
+
+function writeForm(data) {
+  const alert = data.alert;
+  state.currentScenario = alert.scenarioId;
+  $("title").value = alert.title;
+  $("severity").value = alert.severity;
+  $("confidence").value = alert.evidenceConfidence;
+  $("confidence-label").textContent = `${alert.evidenceConfidence}%`;
+  $("users").value = alert.impactedUsers;
+  $("revenue").value = alert.revenueAtRiskUsd;
+  $("customer-impact").checked = alert.customerImpact;
+  $("contained").checked = alert.contained;
+  $("signals").value = alert.signals.join("\n");
+}
+
+async function fetchCase(payload) {
+  const response = await fetch("/api/case", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(payload || { scenarioId: state.currentScenario })
+  });
+  if (!response.ok) throw new Error(`Case request failed: ${response.status}`);
+  return response.json();
+}
+
+async function loadScenario(scenarioId) {
+  state.currentScenario = scenarioId;
+  const data = await fetchCase({ scenarioId });
+  state.currentCase = data;
+  writeForm(data);
+  render(data);
+  updateScenarioButtons();
+}
+
+function updateScenarioButtons() {
+  document.querySelectorAll("[data-scenario]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.scenario === state.currentScenario);
+  });
+}
+
+function renderScenarioButtons(scenarios) {
+  const buttons = scenarios.map((scenario) => {
+    const button = node("button", "scenario-button", "");
+    button.type = "button";
+    button.dataset.scenario = scenario.id;
+    button.append(node("strong", "", scenario.name));
+    button.append(node("span", "", scenario.severity));
+    button.addEventListener("click", () => loadScenario(scenario.id));
+    return button;
+  });
+  replace("scenario-buttons", buttons);
+  updateScenarioButtons();
+}
+
+function renderMetrics(metrics) {
+  replace("metric-grid", metrics.map((metric) => {
+    const item = node("article", "metric-card");
+    item.append(node("span", "", metric.label));
+    item.append(node("strong", "", metric.value));
+    item.append(node("small", "", metric.detail));
+    return item;
+  }));
 }
 
 function renderTasks(tasks) {
-  const root = document.getElementById("tasks");
-  root.replaceChildren();
-  tasks.forEach((task) => {
-    const wrapper = element("div", "task");
-    wrapper.append(element("span", `pill ${task.status}`, task.status));
-    wrapper.append(element("strong", "", task.owner));
-    wrapper.append(element("span", "", task.action));
-    root.appendChild(wrapper);
-  });
+  replace("tasks", tasks.map((task) => {
+    const item = node("article", `task-card ${task.status}`);
+    const top = node("div", "task-top");
+    top.append(node("span", "tag", task.stage));
+    top.append(node("span", `status ${task.status}`, task.status));
+    item.append(top);
+    item.append(node("strong", "", task.owner));
+    item.append(node("p", "", task.action));
+    item.append(node("small", "", `Due ${shortDate(task.dueAt)} - ${task.acceptance}`));
+    return item;
+  }));
+  setText("ready-count", `${tasks.filter((task) => task.status === "ready").length} ready`);
+}
+
+function renderWindows(windows) {
+  replace("windows", windows.map((window) => {
+    const item = node("div", "window-row");
+    item.append(node("strong", "", window.label));
+    item.append(node("span", "", `${window.dueMinutes} min`));
+    item.append(node("small", "", shortDate(window.dueAt)));
+    return item;
+  }));
 }
 
 function renderRecords(records) {
-  const root = document.getElementById("records");
-  root.replaceChildren();
-  records.slice(0, 7).forEach((record) => {
-    root.appendChild(element("div", "record", `${record.PK} / ${record.SK} / ${record.entity}`));
-  });
+  replace("records", records.slice(0, 12).map((record) => {
+    const item = node("article", "record-row");
+    item.append(node("strong", "", record.entity));
+    item.append(node("code", "", `${record.PK} / ${record.SK}`));
+    return item;
+  }));
+  setText("record-count", `${records.length} records`);
+}
+
+function renderEvidence(items) {
+  replace("evidence", items.map((item) => {
+    const row = node("article", "evidence-row");
+    const header = node("div", "evidence-header");
+    header.append(node("strong", "", `${item.confidence}%`));
+    header.append(node("span", "tag", item.status));
+    row.append(header);
+    row.append(node("p", "", item.detail));
+    row.append(node("code", "", item.integrityHash));
+    return row;
+  }));
+}
+
+function renderQueries(queries) {
+  replace("queries", queries.map((query) => {
+    const row = node("article", "query-row");
+    row.append(node("strong", "", query.name));
+    row.append(node("code", "", query.query));
+    row.append(node("small", "", query.reason));
+    return row;
+  }));
+}
+
+function renderUpdates(updates) {
+  replace("updates", updates.map((update) => {
+    const row = node("article", "update-row");
+    row.append(node("span", "tag", update.audience));
+    row.append(node("p", "", update.message));
+    return row;
+  }));
 }
 
 function renderAudit(events) {
-  const root = document.getElementById("audit");
-  root.replaceChildren();
-  events.forEach((event) => {
-    const item = element("li", "");
-    item.append(element("div", "time", event.at));
-    item.append(element("strong", "", event.event));
-    item.append(element("div", "", event.detail));
-    root.appendChild(item);
-  });
+  replace("audit", events.map((event) => {
+    const item = node("li", "");
+    item.append(node("time", "", shortDate(event.at)));
+    item.append(node("strong", "", event.event));
+    item.append(node("p", "", event.detail));
+    return item;
+  }));
 }
 
 function renderGates(gates) {
   const rows = [
     ["No secrets stored", gates.noSecretsStored, true],
+    ["Local prototype ready", gates.localPrototypeReady, true],
     ["Live AWS database claimed", gates.liveAwsDatabaseClaimed, false],
     ["Vercel deployment claimed", gates.vercelDeploymentClaimed, false],
     ["AWS screenshot required", gates.awsScreenshotRequired, false],
-    ["Devpost final submit required", gates.devpostFinalSubmitRequired, false]
+    ["Final submission required", gates.devpostFinalSubmitRequired, false]
   ];
-  const root = document.getElementById("gates");
-  root.replaceChildren();
-  rows.forEach(([label, value, expected]) => {
+  replace("gates", rows.map(([label, value, expected]) => {
     const ok = value === expected;
-    root.appendChild(element("div", `gate ${ok ? "good" : "blocked"}`, `${label}: ${value}`));
-  });
+    const row = node("div", `gate-row ${ok ? "ok" : "blocked"}`);
+    row.append(node("strong", "", label));
+    row.append(node("span", "", String(value)));
+    return row;
+  }));
 }
 
-async function main() {
-  const response = await fetch("/api/case");
-  const data = await response.json();
-  text("case-title", data.alert.title);
-  text("severity", data.alert.severity.toUpperCase());
-  text("risk", `${data.risk}/100`);
-  text("system", data.alert.impactedSystem);
-  renderList("signals", data.alert.signals);
+function render(data) {
+  const alert = data.alert;
+  const stateLabel = alert.contained ? "Contained" : "Active";
+  setText("case-title", alert.title);
+  setText("case-id", data.caseId);
+  setText("case-severity", alert.severity.toUpperCase());
+  setText("case-state", stateLabel);
+  setText("risk-score", `${data.risk}`);
+  setText("risk-detail", `${alert.owner} owns ${alert.impactedSystem}`);
+  setText("case-summary", `${alert.impactedUsers.toLocaleString("en-US")} affected scope, ${money(alert.revenueAtRiskUsd)} exposure, ${alert.signals.length} evidence signals.`);
+  $("risk-ring").style.setProperty("--risk", `${data.risk}%`);
+  renderMetrics(data.metrics);
   renderTasks(data.tasks);
+  renderWindows(data.windows);
   renderRecords(data.records);
+  renderEvidence(data.evidence);
+  renderQueries(data.architectureQueries);
+  renderUpdates(data.updates);
   renderAudit(data.audit);
   renderGates(data.gates);
 }
 
+function downloadJson() {
+  if (!state.currentCase) return;
+  const blob = new Blob([JSON.stringify(state.currentCase, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = `${state.currentCase.caseId.toLowerCase()}-incident-zero.json`;
+  document.body.append(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function main() {
+  const scenarioResponse = await fetch("/api/scenarios");
+  const scenarioData = await scenarioResponse.json();
+  renderScenarioButtons(scenarioData.scenarios);
+  const data = await fetchCase({ scenarioId: state.currentScenario });
+  state.currentCase = data;
+  writeForm(data);
+  render(data);
+
+  $("confidence").addEventListener("input", () => {
+    $("confidence-label").textContent = `${$("confidence").value}%`;
+  });
+
+  $("rebuild").addEventListener("click", async () => {
+    const updated = await fetchCase(readForm());
+    state.currentCase = updated;
+    writeForm(updated);
+    render(updated);
+    updateScenarioButtons();
+  });
+
+  $("export-json").addEventListener("click", downloadJson);
+}
+
 main().catch((error) => {
-  text("case-title", "Unable to load local case");
+  setText("case-title", "Unable to load local case");
   console.error(error);
 });

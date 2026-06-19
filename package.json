@@ -1,17 +1,17 @@
 {
   "name": "h0-incident-zero-stack",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "No-secret local prototype for H0: Vercel/v0 plus AWS Databases incident response workflow.",
+  "description": "No-secret local incident response cockpit with DynamoDB-shaped audit records.",
   "scripts": {
     "start": "node src/server.js",
     "test": "node tests/incidentZero.test.js",
     "check": "node --check src/incidentZero.js && node --check src/server.js && node --check public/app.js && node --check tests/incidentZero.test.js"
   },
   "keywords": [
-    "h0",
     "aws-dynamodb",
     "vercel",
+    "response-cockpit",
     "incident-response"
   ],
   "license": "UNLICENSED"

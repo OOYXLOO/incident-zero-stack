@@ -1,14 +1,15 @@
 # Incident Zero Stack
 
-Incident Zero Stack is a local no-secret prototype for H0: Hack the Zero Stack with Vercel v0 and AWS Databases.
+Incident Zero Stack is a no-secret incident response cockpit for alert triage, containment planning, evidence ledgers, stakeholder updates, audit timelines, and executive handoff.
 
-It models a security incident-response application where alert intake, response ownership, evidence, audit events, and executive handoff are persisted as database records. The current package uses an in-memory/local adapter for review and includes a DynamoDB single-table design for the required AWS Database proof path.
+The prototype keeps incident state in deterministic DynamoDB-shaped records so reviewers can inspect how one case is represented as `CASE`, `ALERT`, `EVIDENCE`, `TASK`, `AUDIT`, `UPDATE`, `METRIC`, and `HANDOFF` entities.
 
-## Current Status
+## Current Build
 
-- Local deterministic prototype only.
-- No AWS keys, Vercel tokens, cookies, billing data, payout data, or cloud screenshots are stored.
-- Real Vercel/v0 deployment, AWS Database creation, AWS usage screenshot, Devpost final submission, and prize payout/tax/KYC remain account-owner gates.
+- Multi-scenario cockpit for identity, payment, and data-export incidents.
+- Local API for rebuilding an incident from adjustable risk inputs.
+- Browser UI with action board, SLA windows, evidence ledger, database records, access patterns, stakeholder updates, audit timeline, and cloud proof gates.
+- No credentials, tokens, cookies, billing data, payout data, or private customer data.
 
 ## Quick Start
 
@@ -18,15 +19,31 @@ npm run check
 npm start
 ```
 
-Then open `http://127.0.0.1:8794/`.
+Then open:
 
-## Local Review
+```text
+http://127.0.0.1:8794/
+```
 
-- `/api/case` returns a full incident case, database-shaped records, audit trail, and proof gates.
-- `/api/schema` returns the DynamoDB single-table schema proposal.
-- The browser UI shows triage queue, response plan, database records, audit timeline, and cloud proof gates.
-- `docs/devpost_gallery_assets.md` lists upload-ready local screenshots: `cover.png`, `desktop-preview.png`, and `mobile-preview.png`.
+Useful local endpoints:
 
-## Honest Scope
+```text
+GET  /api/health
+GET  /api/scenarios
+GET  /api/case
+POST /api/case
+GET  /api/schema
+```
 
-This package does not claim live AWS Database usage, a Vercel deployment, or v0 generation. Those must be completed through official account-owner flows before a final H0 submission.
+## Project Shape
+
+```text
+public/   Browser cockpit
+src/      Incident model and local server
+tests/    Deterministic model and HTTP checks
+docs/     Review assets and deployment notes
+```
+
+## Cloud Boundary
+
+This repository is local-first. A production or challenge submission path should be completed only through account-owner flows for hosting, database provisioning, screenshots, and final publication.
