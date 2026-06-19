@@ -21,6 +21,7 @@ This repository is shaped for a Vercel deployment without changing local develop
 ```bash
 npm test
 npm run check
+npm run audit:local
 ```
 
 ## Post-Deploy Check

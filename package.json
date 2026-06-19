@@ -6,9 +6,10 @@
   "scripts": {
     "start": "node src/server.js",
     "test": "node tests/incidentZero.test.js",
-    "check": "node --check src/incidentZero.js && node --check src/storage.js && node --check src/dynamoAdapter.js && node --check src/cloudReadiness.js && node --check src/apiCore.js && node --check src/server.js && node --check public/app.js && node --check api/_handler.js && node --check api/case.js && node --check api/cloud-readiness.js && node --check api/handoff.js && node --check api/health.js && node --check api/scenarios.js && node --check api/schema.js && node --check api/storage-preview.js && node --check scripts/verify-public.js && node --check scripts/verify-dynamodb-live.js && node --check tests/incidentZero.test.js",
+    "check": "node --check src/incidentZero.js && node --check src/storage.js && node --check src/dynamoAdapter.js && node --check src/cloudReadiness.js && node --check src/apiCore.js && node --check src/server.js && node --check public/app.js && node --check api/_handler.js && node --check api/case.js && node --check api/cloud-readiness.js && node --check api/handoff.js && node --check api/health.js && node --check api/scenarios.js && node --check api/schema.js && node --check api/storage-preview.js && node --check scripts/verify-public.js && node --check scripts/verify-dynamodb-live.js && node --check scripts/audit-local-readiness.js && node --check tests/incidentZero.test.js",
     "verify:public": "node scripts/verify-public.js",
-    "verify:dynamodb": "node scripts/verify-dynamodb-live.js"
+    "verify:dynamodb": "node scripts/verify-dynamodb-live.js",
+    "audit:local": "node scripts/audit-local-readiness.js"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.828.0",

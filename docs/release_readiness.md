@@ -6,6 +6,7 @@ Use this checklist before creating a public repository, deployment, or public pr
 
 - [ ] `npm test` passes.
 - [ ] `npm run check` passes.
+- [ ] `npm run audit:local` passes before external account work.
 - [ ] Browser smoke passes for dashboard, scenario switch, `Run demo`, storage plan, and handoff preview.
 - [ ] `/api/cloud-readiness` reports local review ready and lists only missing account-owner gates.
 - [ ] `npm run verify:public -- <public-url>` passes after deployment.
