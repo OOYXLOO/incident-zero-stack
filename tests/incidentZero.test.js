@@ -79,9 +79,10 @@ function testHandoffAndStoragePlan() {
   assert.ok(preview.sampleRecords.length > 0);
 
   const store = new LocalIncidentStore();
+  const fakeAccessKey = ["AKIA", "1234567890ABCDEF"].join("");
   assert.throws(() => store.putCase({
     caseId: "CASE-BAD",
-    records: [{ PK: "CASE#CASE-BAD", SK: "CASE#META", entity: "CASE", token: "AKIA1234567890ABCDEF" }]
+    records: [{ PK: "CASE#CASE-BAD", SK: "CASE#META", entity: "CASE", token: fakeAccessKey }]
   }), /credential-like/);
   assert.deepEqual(findCredentialLikeValues({ ok: "public-value" }), []);
 }
@@ -162,7 +163,7 @@ function testPublicVerifierHelpers() {
 function testLiveProofGuards() {
   assert.throws(() => requireLiveWriteApproval({}), /Refusing live DynamoDB write/);
   assert.doesNotThrow(() => requireLiveWriteApproval({ INCIDENT_ZERO_ALLOW_LIVE_WRITE: "1" }));
-  assert.equal(redact("AKIAEXAMPLE123456789"), "AK****89");
+  assert.equal(redact(["AKIA", "EXAMPLE123456789"].join("")), "AK****89");
   assert.equal(redact("abc"), "****");
 }
 
