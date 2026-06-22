@@ -34,12 +34,13 @@ jobs:
       - name: Unit and API tests
         run: npm test
 
-      - name: Public wording guard
+      - name: Credential shape guard
         shell: bash
         run: |
-          if grep -RInE 'prize|payout|money-goal|USD 200|赚钱|奖金' . \
+          if grep -RInE 'BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|AKIA[0-9A-Z]{16}|aws_secret_access_key[[:space:]]*=' . \
             --exclude-dir=.git \
+            --exclude-dir=node_modules \
             --exclude=ci.yml; then
-            echo "Public repository contains planning-language terms."
+            echo "Repository contains a credential-shaped value."
             exit 1
           fi
