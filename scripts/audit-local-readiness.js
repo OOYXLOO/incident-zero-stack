@@ -13,7 +13,7 @@ const REQUIRED_FILES = [
   "vercel.json",
   ".gitignore",
   ".github/workflows/ci.yml",
-  ".github/workflows/deploy-static.yml",
+  ".github/workflows/package-static-demo.yml",
   "api/case.js",
   "api/cloud-readiness.js",
   "api/handoff.js",
