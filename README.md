@@ -41,6 +41,7 @@ POST /api/slack-agent
 ```
 
 Slack agent handoff notes are maintained in [docs/slack_agent_handoff.md](docs/slack_agent_handoff.md).
+Slack challenge submission notes are maintained in [docs/slack_challenge_submission_pack.md](docs/slack_challenge_submission_pack.md).
 
 ## Project Shape
 

@@ -148,12 +148,22 @@ function parseSlackText(text = "") {
   return input;
 }
 
-function createSlackAgentSubmissionPack({ publicUrl = "https://example.com" } = {}) {
+function createSlackAgentSubmissionPack({
+  publicUrl = "https://example.com",
+  sourceRepoUrl = "https://github.com/OOYXLOO/incident-zero-stack",
+} = {}) {
   const scenarios = scenarioList();
   const examples = scenarios.map((scenario) => createSlackAgentResponse({ scenarioId: scenario.id }));
   return {
     projectName: "Incident Zero Agent",
     publicUrl,
+    sourceRepoUrl,
+    challenge: {
+      name: "Slack Agent Builder Challenge",
+      url: "https://slackhack.devpost.com/",
+      deadline: "July 13, 2026 at 5:00pm PDT",
+      recommendedTrack: "New Slack Agent",
+    },
     manifest: createSlackAppManifest({ publicUrl }),
     slashCommandExamples: [
       "/incident-zero scenario=identity severity=critical",
@@ -174,6 +184,49 @@ function createSlackAgentSubmissionPack({ publicUrl = "https://example.com" } = 
       "The Slack response renders Block Kit fields, action buttons, evidence, and handoff metadata.",
       "Live workspace configuration stays outside the repository.",
     ],
+    submissionChecklist: [
+      {
+        label: "Project track",
+        status: "ready",
+        detail: "Use New Slack Agent unless a marketplace submission gate is completed.",
+      },
+      {
+        label: "Text description",
+        status: "ready",
+        detail: "Summarize the Slack incident-response agent, deterministic case records, Block Kit brief, and executive handoff.",
+      },
+      {
+        label: "3-minute demo video",
+        status: "user-gated",
+        detail: "Requires a visible Slack sandbox or local-to-public walkthrough recording.",
+      },
+      {
+        label: "Architecture diagram",
+        status: "ready",
+        detail: "Use the architecture notes in this pack for the diagram labels.",
+      },
+      {
+        label: "Slack developer sandbox URL",
+        status: "user-gated",
+        detail: "Requires user-owned Slack developer sandbox access and challenge tester invites.",
+      },
+      {
+        label: "Source repository",
+        status: "ready",
+        detail: sourceRepoUrl,
+      },
+    ],
+    judgingFit: [
+      "Technological Implementation: shared incident API, Vercel handler, deterministic case model, Block Kit response, and credential guards.",
+      "Design: one slash command returns a compact executive brief with actions, evidence, and handoff entry points.",
+      "Potential Impact: helps small teams coordinate incident response without exposing private Slack messages or credentials.",
+      "Quality of Idea: turns incident response into an auditable Slack agent workflow rather than another generic chatbot.",
+    ],
+    safetyBoundary: [
+      "No Slack tokens, signing secrets, workspace cookies, private messages, customer data, billing records, or credentials are stored in this repository.",
+      "The generated Slack manifest uses placeholder public URLs until the user configures a real sandbox workspace.",
+      "Live deployment and Devpost submission remain account-owner gates.",
+    ],
     examples,
     nextExternalGates: [
       "Create Slack app from the generated manifest.",
@@ -185,9 +238,59 @@ function createSlackAgentSubmissionPack({ publicUrl = "https://example.com" } = 
   };
 }
 
+function formatChecklist(items) {
+  return items.map((item) => `- [${item.status === "ready" ? "x" : " "}] ${item.label}: ${item.status} - ${item.detail}`).join("\n");
+}
+
+function formatSlackAgentSubmissionMarkdown(pack) {
+  return `# Incident Zero Agent - Slack Challenge Submission Pack
+
+## Challenge
+
+- Name: ${pack.challenge.name}
+- URL: ${pack.challenge.url}
+- Deadline: ${pack.challenge.deadline}
+- Recommended track: ${pack.challenge.recommendedTrack}
+
+## Public Links
+
+- Public app URL: ${pack.publicUrl}
+- Source repository: ${pack.sourceRepoUrl}
+
+## Submission Checklist
+
+${formatChecklist(pack.submissionChecklist)}
+
+## Demo Script
+
+${pack.demoScript.map((step, index) => `${index + 1}. ${step}`).join("\n")}
+
+## Architecture Notes
+
+${pack.architectureNotes.map((note) => `- ${note}`).join("\n")}
+
+## Judging Fit
+
+${pack.judgingFit.map((item) => `- ${item}`).join("\n")}
+
+## Slash Command Examples
+
+${pack.slashCommandExamples.map((example) => `- \`${example}\``).join("\n")}
+
+## Safety Boundary
+
+${pack.safetyBoundary.map((item) => `- ${item}`).join("\n")}
+
+## External Gates
+
+${pack.nextExternalGates.map((item) => `- ${item}`).join("\n")}
+`;
+}
+
 module.exports = {
   createSlackAgentResponse,
   createSlackAgentSubmissionPack,
   createSlackAppManifest,
+  formatSlackAgentSubmissionMarkdown,
   parseSlackText,
 };

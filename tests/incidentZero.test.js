@@ -1,7 +1,11 @@
 "use strict";
 
 const assert = require("assert");
+const childProcess = require("child_process");
+const fs = require("fs");
 const http = require("http");
+const os = require("os");
+const path = require("path");
 const { cloudReadiness } = require("../src/cloudReadiness");
 const { buildBatchWriteChunks, buildPutRequests, dynamoReadinessFromEnv } = require("../src/dynamoAdapter");
 const {
@@ -25,11 +29,17 @@ const {
   createSlackAgentResponse,
   createSlackAgentSubmissionPack,
   createSlackAppManifest,
+  formatSlackAgentSubmissionMarkdown,
   parseSlackText
 } = require("../src/slackAgent");
 const { LocalIncidentStore, createStoragePreview, findCredentialLikeValues } = require("../src/storage");
 const { normalizeBaseUrl, run: runPublicVerification } = require("../scripts/verify-public");
 const { redact, requireLiveWriteApproval } = require("../scripts/verify-dynamodb-live");
+
+function hasInternalStrategyWording(text) {
+  const internalTerms = ["money" + "-goal", "USD " + "200", "\u8d5a\u94b1"];
+  return internalTerms.some((term) => String(text).toLowerCase().includes(term.toLowerCase()));
+}
 
 function testDefaultCase() {
   const result = buildCase();
@@ -180,10 +190,58 @@ function testSlackAgentPack() {
     customerImpact: "true"
   });
 
-  const pack = createSlackAgentSubmissionPack({ publicUrl: "https://incident-zero.example" });
+  const pack = createSlackAgentSubmissionPack({
+    publicUrl: "https://incident-zero.example",
+    sourceRepoUrl: "https://github.com/OOYXLOO/incident-zero-stack"
+  });
   assert.equal(pack.examples.length, scenarioList().length);
   assert.ok(pack.architectureNotes.some((note) => note.includes("/api/slack-agent")));
   assert.ok(pack.nextExternalGates.includes("Create Slack app from the generated manifest."));
+  assert.equal(pack.challenge.name, "Slack Agent Builder Challenge");
+  assert.equal(pack.challenge.url, "https://slackhack.devpost.com/");
+  assert.ok(pack.challenge.deadline.includes("July 13, 2026"));
+  assert.ok(pack.submissionChecklist.some((item) => item.label === "3-minute demo video" && item.status === "user-gated"));
+  assert.ok(pack.submissionChecklist.some((item) => item.label === "Architecture diagram" && item.status === "ready"));
+  assert.ok(pack.submissionChecklist.some((item) => item.label === "Slack developer sandbox URL" && item.status === "user-gated"));
+  assert.ok(pack.submissionChecklist.some((item) => item.label === "Source repository" && item.status === "ready"));
+  assert.ok(pack.safetyBoundary.some((item) => item.includes("No Slack tokens")));
+
+  const markdown = formatSlackAgentSubmissionMarkdown(pack);
+  assert.match(markdown, /# Incident Zero Agent - Slack Challenge Submission Pack/);
+  assert.match(markdown, /Slack Agent Builder Challenge/);
+  assert.match(markdown, /3-minute demo video/);
+  assert.match(markdown, /No Slack tokens/);
+  assert.equal(hasInternalStrategyWording(markdown), false);
+}
+
+function testSlackAgentPackExporter() {
+  const tmpDir = path.join(os.tmpdir(), "incident-zero-stack-tests");
+  fs.mkdirSync(tmpDir, { recursive: true });
+  const outputFile = path.join(tmpDir, "slack-challenge-pack.md");
+  fs.rmSync(outputFile, { force: true });
+
+  const result = childProcess.spawnSync(process.execPath, [
+    "scripts/export-slack-agent-pack.js",
+    "--public-url",
+    "https://incident-zero.example",
+    "--source-repo-url",
+    "https://github.com/OOYXLOO/incident-zero-stack",
+    "--markdown-output",
+    outputFile
+  ], {
+    cwd: path.resolve(__dirname, ".."),
+    encoding: "utf8"
+  });
+
+  assert.equal(result.status, 0, result.stderr);
+  const json = JSON.parse(result.stdout);
+  assert.equal(json.sourceRepoUrl, "https://github.com/OOYXLOO/incident-zero-stack");
+  assert.equal(json.challenge.name, "Slack Agent Builder Challenge");
+  assert.equal(fs.existsSync(outputFile), true);
+  const markdown = fs.readFileSync(outputFile, "utf8");
+  assert.ok(markdown.includes("Incident Zero Agent - Slack Challenge Submission Pack"));
+  assert.ok(markdown.includes("Slack developer sandbox URL"));
+  assert.equal(hasInternalStrategyWording(markdown), false);
 }
 
 function testPathGuard() {
@@ -373,6 +431,7 @@ async function main() {
   testNormalizationAndRisk();
   testTaskShape();
   testSlackAgentPack();
+  testSlackAgentPackExporter();
   testPathGuard();
   testPublicVerifierHelpers();
   testLiveProofGuards();

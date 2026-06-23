@@ -1,6 +1,8 @@
 "use strict";
 
-const { createSlackAgentSubmissionPack } = require("../src/slackAgent");
+const fs = require("fs");
+const path = require("path");
+const { createSlackAgentSubmissionPack, formatSlackAgentSubmissionMarkdown } = require("../src/slackAgent");
 
 function argValue(flag, fallback) {
   const index = process.argv.indexOf(flag);
@@ -10,7 +12,13 @@ function argValue(flag, fallback) {
 
 function main() {
   const publicUrl = argValue("--public-url", "https://example.com");
-  const pack = createSlackAgentSubmissionPack({ publicUrl });
+  const sourceRepoUrl = argValue("--source-repo-url", "https://github.com/OOYXLOO/incident-zero-stack");
+  const markdownOutput = argValue("--markdown-output", null);
+  const pack = createSlackAgentSubmissionPack({ publicUrl, sourceRepoUrl });
+  if (markdownOutput) {
+    fs.mkdirSync(path.dirname(path.resolve(markdownOutput)), { recursive: true });
+    fs.writeFileSync(markdownOutput, formatSlackAgentSubmissionMarkdown(pack), "utf8");
+  }
   process.stdout.write(`${JSON.stringify(pack, null, 2)}\n`);
 }
 

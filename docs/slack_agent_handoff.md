@@ -7,7 +7,7 @@ Incident Zero Agent adds a Slack-facing response layer to the local incident coc
 - Shared API route: `GET /api/slack-agent` and `POST /api/slack-agent`
 - Vercel function: `api/slack-agent.js`
 - Slack response builder: `src/slackAgent.js`
-- Submission pack export: `npm run export:slack-agent-pack -- --public-url <deployment-url>`
+- Submission pack export: `npm run export:slack-agent-pack -- --public-url <deployment-url> --source-repo-url <repo-url> --markdown-output docs/slack_challenge_submission_pack.md`
 - Tests for response shape, manifest URL generation, slash-command text parsing, local HTTP routing, and the Vercel wrapper
 
 ## Slash Command Examples
@@ -29,10 +29,11 @@ Slack form posts should send the command text as `text`. For local testing, post
 The generated manifest draft points the slash command and interactivity request URL at the deployed endpoint:
 
 ```bash
-npm run export:slack-agent-pack -- --public-url https://your-deployment.example
+npm run export:slack-agent-pack -- --public-url https://your-deployment.example --source-repo-url https://github.com/OOYXLOO/incident-zero-stack --markdown-output docs/slack_challenge_submission_pack.md
 ```
 
 Use the `manifest` field from the JSON output as the starting point for a Slack app in a sandbox workspace.
+Use `docs/slack_challenge_submission_pack.md` as the submission checklist, demo-script handoff, architecture note source, and account-owner gate list.
 
 ## Demo Flow
 
