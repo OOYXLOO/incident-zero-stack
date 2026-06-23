@@ -280,6 +280,17 @@ function testStaticDemoIsWiredIntoPublicApp() {
   assert.ok(app.includes("fetchJsonWithFallback"));
 }
 
+function testStaticMarkdownExportIsWiredIntoPublicApp() {
+  const root = path.resolve(__dirname, "..");
+  const html = fs.readFileSync(path.join(root, "public/index.html"), "utf8");
+  const app = fs.readFileSync(path.join(root, "public/app.js"), "utf8");
+  assert.ok(html.includes("id=\"export-markdown\""));
+  assert.ok(html.includes("Export Markdown"));
+  assert.ok(app.includes("function downloadMarkdown"));
+  assert.ok(app.includes("markdown;charset=utf-8"));
+  assert.ok(app.includes("export-markdown"));
+}
+
 function testPathGuard() {
   assert.equal(safePublicPath("/../README.md"), null);
   const indexPath = safePublicPath("/index.html");
@@ -470,6 +481,7 @@ async function main() {
   testSlackAgentPackExporter();
   testStaticDemoExporter();
   testStaticDemoIsWiredIntoPublicApp();
+  testStaticMarkdownExportIsWiredIntoPublicApp();
   testPathGuard();
   testPublicVerifierHelpers();
   testLiveProofGuards();

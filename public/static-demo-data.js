@@ -1,5 +1,5 @@
 window.INCIDENT_ZERO_STATIC_DEMO = {
-  "generatedAt": "2026-06-23T23:13:34.009Z",
+  "generatedAt": "2026-06-23T23:55:42.171Z",
   "source": "local deterministic Incident Zero model",
   "mode": "static-review-fallback",
   "scenarios": [

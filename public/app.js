@@ -351,6 +351,20 @@ function downloadJson() {
   URL.revokeObjectURL(url);
 }
 
+function downloadMarkdown() {
+  if (!state.currentCase || !state.currentCase.handoff) return;
+  const filename = state.currentCase.handoff.filename || `${state.currentCase.caseId.toLowerCase()}-handoff.md`;
+  const blob = new Blob([state.currentCase.handoff.markdown], { type: "text/markdown;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.append(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
+}
+
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -399,6 +413,7 @@ async function main() {
   $("run-demo").addEventListener("click", runDemo);
 
   $("export-json").addEventListener("click", downloadJson);
+  $("export-markdown").addEventListener("click", downloadMarkdown);
 }
 
 main().catch((error) => {
