@@ -244,6 +244,42 @@ function testSlackAgentPackExporter() {
   assert.equal(hasInternalStrategyWording(markdown), false);
 }
 
+function testStaticDemoExporter() {
+  const tmpDir = path.join(os.tmpdir(), "incident-zero-stack-tests");
+  fs.mkdirSync(tmpDir, { recursive: true });
+  const outputFile = path.join(tmpDir, "static-demo-data.js");
+  fs.rmSync(outputFile, { force: true });
+
+  const result = childProcess.spawnSync(process.execPath, [
+    "scripts/export-static-demo.js",
+    "--out",
+    outputFile
+  ], {
+    cwd: path.resolve(__dirname, ".."),
+    encoding: "utf8"
+  });
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(fs.existsSync(outputFile), true);
+  const text = fs.readFileSync(outputFile, "utf8");
+  assert.ok(text.startsWith("window.INCIDENT_ZERO_STATIC_DEMO = "));
+  assert.ok(text.includes("Privileged token anomaly"));
+  assert.ok(text.includes("Duplicate payment webhook replay"));
+  assert.ok(text.includes("Unusual data export"));
+  assert.ok(text.includes("demoSteps"));
+  assert.equal(hasInternalStrategyWording(text), false);
+}
+
+function testStaticDemoIsWiredIntoPublicApp() {
+  const root = path.resolve(__dirname, "..");
+  const html = fs.readFileSync(path.join(root, "public/index.html"), "utf8");
+  const app = fs.readFileSync(path.join(root, "public/app.js"), "utf8");
+  assert.ok(html.includes("static-demo-data.js"));
+  assert.ok(html.indexOf("static-demo-data.js") < html.indexOf("app.js"));
+  assert.ok(app.includes("INCIDENT_ZERO_STATIC_DEMO"));
+  assert.ok(app.includes("fetchJsonWithFallback"));
+}
+
 function testPathGuard() {
   assert.equal(safePublicPath("/../README.md"), null);
   const indexPath = safePublicPath("/index.html");
@@ -432,6 +468,8 @@ async function main() {
   testTaskShape();
   testSlackAgentPack();
   testSlackAgentPackExporter();
+  testStaticDemoExporter();
+  testStaticDemoIsWiredIntoPublicApp();
   testPathGuard();
   testPublicVerifierHelpers();
   testLiveProofGuards();

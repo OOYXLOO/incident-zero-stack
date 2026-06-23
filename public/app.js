@@ -2,7 +2,8 @@
 
 const state = {
   currentScenario: "identity",
-  currentCase: null
+  currentCase: null,
+  usingStaticDemo: false
 };
 
 function $(id) {
@@ -37,6 +38,55 @@ function replace(id, children) {
   $(id).replaceChildren(...children);
 }
 
+function staticDemoData() {
+  return window.INCIDENT_ZERO_STATIC_DEMO || null;
+}
+
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function staticCase(payload = {}) {
+  const data = staticDemoData();
+  if (!data) return null;
+  const scenarioId = payload.scenarioId || state.currentScenario || "identity";
+  const hasDemoSpecificKeys = ["contained", "evidenceConfidence", "impactedUsers", "revenueAtRiskUsd", "customerImpact"].some((key) => Object.hasOwn(payload, key));
+  if (hasDemoSpecificKeys && Array.isArray(data.demoSteps) && scenarioId === "identity") {
+    const demoMatch = data.demoSteps.find((item) => {
+      const alert = item.alert || {};
+      return Object.keys(payload).every((key) => {
+        if (key === "scenarioId" || key === "title" || key === "severity" || key === "signals") return true;
+        return String(alert[key]) === String(payload[key]);
+      });
+    });
+    if (demoMatch) return clone(demoMatch);
+  }
+  return clone((data.cases && data.cases[scenarioId]) || data.cases.identity);
+}
+
+function staticScenarios() {
+  const data = staticDemoData();
+  return data ? { scenarios: clone(data.scenarios) } : null;
+}
+
+function staticCloudReadiness() {
+  const data = staticDemoData();
+  return data ? clone(data.cloudReadiness) : null;
+}
+
+async function fetchJsonWithFallback(url, options, fallback) {
+  try {
+    const response = await fetch(url, options);
+    if (!response.ok) throw new Error(`${url} request failed: ${response.status}`);
+    return response.json();
+  } catch (error) {
+    const value = fallback();
+    if (!value) throw error;
+    state.usingStaticDemo = true;
+    return value;
+  }
+}
+
 function readForm() {
   return {
     scenarioId: state.currentScenario,
@@ -66,19 +116,15 @@ function writeForm(data) {
 }
 
 async function fetchCase(payload) {
-  const response = await fetch("/api/case", {
+  return fetchJsonWithFallback("/api/case", {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(payload || { scenarioId: state.currentScenario })
-  });
-  if (!response.ok) throw new Error(`Case request failed: ${response.status}`);
-  return response.json();
+  }, () => staticCase(payload || { scenarioId: state.currentScenario }));
 }
 
 async function fetchCloudReadiness() {
-  const response = await fetch("/api/cloud-readiness");
-  if (!response.ok) throw new Error(`Cloud readiness request failed: ${response.status}`);
-  return response.json();
+  return fetchJsonWithFallback("/api/cloud-readiness", undefined, staticCloudReadiness);
 }
 
 async function loadScenario(scenarioId) {
@@ -233,6 +279,11 @@ function renderGates(gates) {
 }
 
 function renderCloudReadiness(readiness) {
+  if (state.usingStaticDemo) {
+    $("cloud-readiness-link").href = "#cloud-readiness";
+    $("cloud-readiness-link").target = "";
+    $("cloud-readiness-link").textContent = "Static preview";
+  }
   const rows = [
     ["Local review", readiness.okForLocalReview ? "ready" : "blocked"],
     ["Cloud claim", readiness.okForPublicCloudClaim ? "ready" : "blocked"],
@@ -253,6 +304,11 @@ function renderCloudReadiness(readiness) {
 function renderHandoff(handoff) {
   const lines = handoff.markdown.split("\n").slice(0, 16).join("\n");
   $("handoff").textContent = lines;
+  if (state.usingStaticDemo) {
+    $("handoff-link").href = "#handoff";
+    $("handoff-link").target = "";
+    $("handoff-link").textContent = "Static preview";
+  }
 }
 
 function render(data) {
@@ -265,6 +321,9 @@ function render(data) {
   setText("risk-score", `${data.risk}`);
   setText("risk-detail", `${alert.owner} owns ${alert.impactedSystem}`);
   setText("case-summary", `${alert.impactedUsers.toLocaleString("en-US")} affected scope, ${money(alert.revenueAtRiskUsd)} exposure, ${alert.signals.length} evidence signals.`);
+  if (state.usingStaticDemo) {
+    setText("case-state", `${stateLabel} / Static demo`);
+  }
   $("risk-ring").style.setProperty("--risk", `${data.risk}%`);
   renderMetrics(data.metrics);
   renderTasks(data.tasks);
@@ -321,8 +380,7 @@ async function runDemo() {
 }
 
 async function main() {
-  const scenarioResponse = await fetch("/api/scenarios");
-  const scenarioData = await scenarioResponse.json();
+  const scenarioData = await fetchJsonWithFallback("/api/scenarios", undefined, staticScenarios);
   renderScenarioButtons(scenarioData.scenarios);
   const data = await fetchCase({ scenarioId: state.currentScenario });
   state.currentCase = data;
