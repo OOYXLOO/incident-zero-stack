@@ -3,6 +3,7 @@
 const { buildCase, DYNAMODB_SCHEMA, scenarioList } = require("./incidentZero");
 const { cloudReadiness } = require("./cloudReadiness");
 const { createStoragePreview } = require("./storage");
+const { createSlackAgentResponse, parseSlackText } = require("./slackAgent");
 
 const MAX_BODY_BYTES = 32 * 1024;
 
@@ -71,6 +72,19 @@ function handleApiRequest({ method = "GET", pathname = "", searchParams = new UR
 
   if (endpoint === "storage-preview" && method === "POST") {
     return jsonBody(createStoragePreview(parseJsonText(bodyText)));
+  }
+
+  if (endpoint === "slack-agent" && method === "GET") {
+    return jsonBody(createSlackAgentResponse(queryToCaseInput(searchParams)));
+  }
+
+  if (endpoint === "slack-agent" && method === "POST") {
+    const contentType = String(searchParams.get("contentType") || "");
+    if (contentType.includes("form")) {
+      const form = new URLSearchParams(bodyText || "");
+      return jsonBody(createSlackAgentResponse(parseSlackText(form.get("text") || "")));
+    }
+    return jsonBody(createSlackAgentResponse(parseJsonText(bodyText)));
   }
 
   if (endpoint === "schema") {

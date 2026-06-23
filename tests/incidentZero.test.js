@@ -19,7 +19,14 @@ const { handleRequest, safePublicPath } = require("../src/server");
 const caseFunction = require("../api/case");
 const cloudReadinessFunction = require("../api/cloud-readiness");
 const handoffFunction = require("../api/handoff");
+const slackAgentFunction = require("../api/slack-agent");
 const storagePreviewFunction = require("../api/storage-preview");
+const {
+  createSlackAgentResponse,
+  createSlackAgentSubmissionPack,
+  createSlackAppManifest,
+  parseSlackText
+} = require("../src/slackAgent");
 const { LocalIncidentStore, createStoragePreview, findCredentialLikeValues } = require("../src/storage");
 const { normalizeBaseUrl, run: runPublicVerification } = require("../scripts/verify-public");
 const { redact, requireLiveWriteApproval } = require("../scripts/verify-dynamodb-live");
@@ -149,6 +156,36 @@ function testTaskShape() {
   assert.ok(tasks.some((task) => task.status === "complete"));
 }
 
+function testSlackAgentPack() {
+  const response = createSlackAgentResponse({ scenarioId: "payments", severity: "high" });
+  assert.equal(response.response_type, "ephemeral");
+  assert.ok(response.text.includes("Incident Zero brief"));
+  assert.ok(response.blocks.some((block) => block.type === "actions"));
+  assert.equal(response.metadata.scenarioId, "payments");
+  assert.equal(response.metadata.noSecretsStored, true);
+  assert.ok(response.metadata.accountOwnerGates.includes("Slack signing secret"));
+
+  const manifest = createSlackAppManifest({ publicUrl: "https://incident-zero.example/app/" });
+  assert.equal(manifest.features.slash_commands[0].url, "https://incident-zero.example/app/api/slack-agent");
+  assert.equal(manifest.settings.interactivity.request_url, "https://incident-zero.example/app/api/slack-agent");
+  assert.ok(manifest.oauth_config.scopes.bot.includes("commands"));
+
+  const parsed = parseSlackText("scenario=data severity=critical confidence=92 users=18 contained=false customerImpact=true ignored");
+  assert.deepEqual(parsed, {
+    scenarioId: "data",
+    severity: "critical",
+    evidenceConfidence: "92",
+    impactedUsers: "18",
+    contained: "false",
+    customerImpact: "true"
+  });
+
+  const pack = createSlackAgentSubmissionPack({ publicUrl: "https://incident-zero.example" });
+  assert.equal(pack.examples.length, scenarioList().length);
+  assert.ok(pack.architectureNotes.some((note) => note.includes("/api/slack-agent")));
+  assert.ok(pack.nextExternalGates.includes("Create Slack app from the generated manifest."));
+}
+
 function testPathGuard() {
   assert.equal(safePublicPath("/../README.md"), null);
   const indexPath = safePublicPath("/index.html");
@@ -168,7 +205,12 @@ function testLiveProofGuards() {
 }
 
 function requestJson(server, path, options = {}) {
-  const body = options.body ? JSON.stringify(options.body) : null;
+  const body = options.rawBody !== undefined ? options.rawBody : (options.body ? JSON.stringify(options.body) : null);
+  const headers = options.headers || (options.rawBody !== undefined ? {
+    "content-type": "application/x-www-form-urlencoded"
+  } : {
+    "content-type": "application/json"
+  });
   return new Promise((resolve, reject) => {
     const request = http.request({
       hostname: "127.0.0.1",
@@ -176,7 +218,7 @@ function requestJson(server, path, options = {}) {
       path,
       method: options.method || "GET",
       headers: body ? {
-        "content-type": "application/json",
+        ...headers,
         "content-length": Buffer.byteLength(body)
       } : undefined
     }, (response) => {
@@ -263,6 +305,18 @@ async function testHttpApi() {
     assert.equal(cloud.body.okForLocalReview, true);
     assert.equal(cloud.body.safety.returnsSecretValues, false);
 
+    const slackGet = await requestJson(server, "/api/slack-agent?scenario=payments&severity=high");
+    assert.equal(slackGet.status, 200);
+    assert.equal(slackGet.body.metadata.scenarioId, "payments");
+    assert.ok(slackGet.body.blocks.some((block) => block.type === "actions"));
+
+    const slackForm = await requestJson(server, "/api/slack-agent?contentType=form", {
+      method: "POST",
+      rawBody: "text=scenario%3Ddata%20severity%3Dcritical%20confidence%3D92"
+    });
+    assert.equal(slackForm.status, 200);
+    assert.equal(slackForm.body.metadata.scenarioId, "data");
+
     const verification = await runPublicVerification(`http://127.0.0.1:${server.address().port}`);
     assert.deepEqual(verification.map((result) => result.ok), verification.map(() => true));
   } finally {
@@ -300,6 +354,14 @@ async function testVercelFunctions() {
   });
   assert.equal(cloudResponse.status, 200);
   assert.equal(JSON.parse(cloudResponse.body).okForLocalReview, true);
+
+  const slackResponse = await invokeVercelFunction(slackAgentFunction, {
+    method: "POST",
+    url: "/api/slack-agent",
+    body: { scenarioId: "data", severity: "critical" }
+  });
+  assert.equal(slackResponse.status, 200);
+  assert.equal(JSON.parse(slackResponse.body).metadata.scenarioId, "data");
 }
 
 async function main() {
@@ -310,6 +372,7 @@ async function main() {
   testDynamoAdapterAndCloudReadiness();
   testNormalizationAndRisk();
   testTaskShape();
+  testSlackAgentPack();
   testPathGuard();
   testPublicVerifierHelpers();
   testLiveProofGuards();

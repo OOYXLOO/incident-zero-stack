@@ -8,6 +8,7 @@ The prototype keeps incident state in deterministic DynamoDB-shaped records so r
 
 - Multi-scenario cockpit for identity, payment, and data-export incidents.
 - Local API for rebuilding an incident from adjustable risk inputs.
+- Slack-facing agent response layer for slash-command incident briefs.
 - Browser UI with action board, SLA windows, evidence ledger, database records, access patterns, stakeholder updates, audit timeline, and cloud proof gates.
 - No credentials, tokens, cookies, billing data, account-owner documents, or private customer data.
 - CI-ready checks for syntax, deterministic tests, and public wording guard.
@@ -35,7 +36,11 @@ GET  /api/scenarios
 GET  /api/case
 POST /api/case
 GET  /api/schema
+GET  /api/slack-agent
+POST /api/slack-agent
 ```
+
+Slack agent handoff notes are maintained in [docs/slack_agent_handoff.md](docs/slack_agent_handoff.md).
 
 ## Project Shape
 

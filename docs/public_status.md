@@ -6,6 +6,7 @@ Incident Zero Stack is ready for source review as a local-first incident respons
 
 - Browser cockpit for incident triage, containment, evidence review, stakeholder updates, audit timeline, and executive handoff.
 - Local API and Vercel-compatible serverless handlers share the same core incident model.
+- Slack-facing agent endpoint returns deterministic incident briefs for slash command review.
 - DynamoDB-shaped records are documented for `CASE`, `ALERT`, `EVIDENCE`, `TASK`, `AUDIT`, `UPDATE`, `METRIC`, and `HANDOFF` entities.
 - Gallery assets and submission field notes are available under `docs/`.
 - Local verification covers syntax checks, deterministic model tests, public wording checks, and launch readiness review.
@@ -16,6 +17,7 @@ Incident Zero Stack is ready for source review as a local-first incident respons
 npm test
 npm run check
 npm run audit:local
+npm run export:slack-agent-pack -- --public-url <deployment-url>
 ```
 
 For a deployed preview, run:
