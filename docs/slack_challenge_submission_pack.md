@@ -22,7 +22,7 @@
 - [x] Text description: ready - Summarize the Slack incident-response agent, deterministic case records, Block Kit brief, and executive handoff.
 - [x] MCP server integration: ready - Run npm run start:mcp to expose incident_zero_brief, incident_zero_handoff, and incident_zero_storage_preview through the official MCP SDK.
 - [ ] 3-minute demo video: user-gated - Requires a visible Slack sandbox or local-to-public walkthrough recording.
-- [x] Architecture diagram: ready - Use the architecture notes in this pack for the diagram labels.
+- [x] Architecture diagram: ready - Use docs/slack-agent-architecture.svg and docs/slack_agent_architecture.md.
 - [ ] Slack developer sandbox URL: user-gated - Requires user-owned Slack developer sandbox access and challenge tester invites.
 - [ ] Public HTTPS endpoint: user-gated - Deploy first, then set slash command and interactivity URLs to /api/slack-agent.
 - [x] Source repository: ready - https://github.com/OOYXLOO/incident-zero-stack
@@ -37,6 +37,8 @@
 
 ## Architecture Notes
 
+- Submission diagram: docs/slack-agent-architecture.svg
+- Diagram notes: docs/slack_agent_architecture.md
 - The slash command posts to /api/slack-agent.
 - The Vercel handler calls the shared API core.
 - The API core rebuilds a deterministic incident case from request inputs.

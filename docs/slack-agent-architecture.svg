@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="960" viewBox="0 0 1600 960" role="img" aria-labelledby="title desc">
+  <title id="title">Incident Zero Slack Agent Architecture</title>
+  <desc id="desc">Slack users call a slash command that reaches a public Vercel endpoint. Shared API logic builds deterministic incident briefs, handoff packets, storage previews, and MCP tool responses without storing workspace credentials in the repository.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,8 L10,4 z" fill="#2459a6"/>
+    </marker>
+    <style>
+      .bg { fill: #f5f7fb; }
+      .band { fill: #ffffff; stroke: #ccd7e6; stroke-width: 2; }
+      .node { fill: #eaf3ff; stroke: #a9c7ec; stroke-width: 2; }
+      .slack { fill: #f4edff; stroke: #c4a7ec; stroke-width: 2; }
+      .store { fill: #e8f6ee; stroke: #94cfad; stroke-width: 2; }
+      .guard { fill: #fff4da; stroke: #ddc36c; stroke-width: 2; }
+      .title { fill: #132033; font: 700 36px Arial, sans-serif; }
+      .subtitle { fill: #5f6d7d; font: 400 18px Arial, sans-serif; }
+      .label { fill: #17202a; font: 700 22px Arial, sans-serif; }
+      .small { fill: #3e4b59; font: 400 16px Arial, sans-serif; }
+      .tiny { fill: #667384; font: 400 14px Arial, sans-serif; }
+      .arrow { stroke: #2459a6; stroke-width: 4; fill: none; marker-end: url(#arrow); }
+      .muted { stroke: #7e8b9a; stroke-width: 3; fill: none; stroke-dasharray: 7 8; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect class="bg" width="1600" height="960"/>
+  <text class="title" x="70" y="72">Incident Zero Slack Agent Architecture</text>
+  <text class="subtitle" x="70" y="106">Slash command, public API endpoint, deterministic incident engine, Block Kit response, MCP tools, and local-first safety boundary.</text>
+
+  <rect class="band" x="60" y="150" width="1480" height="655" rx="22"/>
+
+  <rect class="slack" x="105" y="230" width="255" height="150" rx="16"/>
+  <text class="label" x="132" y="274">Slack sandbox</text>
+  <text class="small" x="132" y="311">/incident-zero command</text>
+  <text class="small" x="132" y="337">Interactive actions</text>
+  <text class="tiny" x="132" y="363">Account-owner configured</text>
+
+  <rect class="node" x="470" y="230" width="255" height="150" rx="16"/>
+  <text class="label" x="502" y="274">Public HTTPS API</text>
+  <text class="small" x="502" y="311">Vercel /api/slack-agent</text>
+  <text class="small" x="502" y="337">GET and POST support</text>
+  <text class="tiny" x="502" y="363">No secrets in source</text>
+
+  <rect class="node" x="835" y="230" width="255" height="150" rx="16"/>
+  <text class="label" x="865" y="274">Shared API core</text>
+  <text class="small" x="865" y="311">Parse command text</text>
+  <text class="small" x="865" y="337">Build incident case</text>
+  <text class="tiny" x="865" y="363">Same logic as browser demo</text>
+
+  <rect class="node" x="1200" y="230" width="255" height="150" rx="16"/>
+  <text class="label" x="1230" y="274">Slack response</text>
+  <text class="small" x="1230" y="311">Block Kit brief</text>
+  <text class="small" x="1230" y="337">Actions and handoff</text>
+  <text class="tiny" x="1230" y="363">Ephemeral-safe output</text>
+
+  <path class="arrow" d="M360 305 H470"/>
+  <text class="tiny" x="384" y="291">signed form post</text>
+  <path class="arrow" d="M725 305 H835"/>
+  <text class="tiny" x="750" y="291">normalized request</text>
+  <path class="arrow" d="M1090 305 H1200"/>
+  <text class="tiny" x="1120" y="291">brief payload</text>
+  <path class="muted" d="M1200 348 C940 430 440 430 232 380"/>
+  <text class="tiny" x="735" y="430">Block Kit response returns to Slack</text>
+
+  <rect class="store" x="155" y="525" width="235" height="140" rx="16"/>
+  <text class="label" x="185" y="569">Incident records</text>
+  <text class="small" x="185" y="604">CASE / ALERT</text>
+  <text class="small" x="185" y="630">EVIDENCE / TASK</text>
+
+  <rect class="store" x="485" y="525" width="235" height="140" rx="16"/>
+  <text class="label" x="515" y="569">Handoff packet</text>
+  <text class="small" x="515" y="604">Executive markdown</text>
+  <text class="small" x="515" y="630">Audit summary</text>
+
+  <rect class="store" x="815" y="525" width="235" height="140" rx="16"/>
+  <text class="label" x="845" y="569">Storage preview</text>
+  <text class="small" x="845" y="604">DynamoDB-shaped</text>
+  <text class="small" x="845" y="630">Access patterns</text>
+
+  <rect class="node" x="1145" y="525" width="270" height="140" rx="16"/>
+  <text class="label" x="1175" y="569">MCP stdio server</text>
+  <text class="small" x="1175" y="604">incident_zero_brief</text>
+  <text class="small" x="1175" y="630">handoff / storage tools</text>
+
+  <path class="muted" d="M962 380 C850 450 330 455 272 525"/>
+  <path class="muted" d="M962 380 C885 455 635 455 602 525"/>
+  <path class="muted" d="M962 380 C955 455 928 455 932 525"/>
+  <path class="muted" d="M962 380 C1075 450 1210 455 1280 525"/>
+
+  <rect class="guard" x="105" y="720" width="1350" height="58" rx="16"/>
+  <text class="small" x="132" y="755">Safety boundary: Slack tokens, signing secrets, private messages, workspace cookies, billing data, and customer records stay in account-owner systems, not in the repository.</text>
+
+  <text class="tiny" x="70" y="855">Submission assets: docs/slack_challenge_submission_pack.md, docs/slack_agent_handoff.md, docs/slack-agent-architecture.svg</text>
+</svg>
