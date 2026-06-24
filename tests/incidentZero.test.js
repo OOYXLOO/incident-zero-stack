@@ -32,6 +32,10 @@ const {
   formatSlackAgentSubmissionMarkdown,
   parseSlackText
 } = require("../src/slackAgent");
+const {
+  callIncidentTool,
+  createMcpToolDefinitions
+} = require("../src/mcpTools");
 const { LocalIncidentStore, createStoragePreview, findCredentialLikeValues } = require("../src/storage");
 const { normalizeBaseUrl, run: runPublicVerification } = require("../scripts/verify-public");
 const { redact, requireLiveWriteApproval } = require("../scripts/verify-dynamodb-live");
@@ -196,6 +200,9 @@ function testSlackAgentPack() {
   });
   assert.equal(pack.examples.length, scenarioList().length);
   assert.ok(pack.architectureNotes.some((note) => note.includes("/api/slack-agent")));
+  assert.ok(pack.architectureNotes.some((note) => note.includes("MCP server")));
+  assert.ok(pack.judgingFit.some((item) => item.includes("MCP")));
+  assert.ok(pack.submissionChecklist.some((item) => item.label === "MCP server integration" && item.status === "ready"));
   assert.ok(pack.nextExternalGates.includes("Create Slack app from the generated manifest."));
   assert.equal(pack.challenge.name, "Slack Agent Builder Challenge");
   assert.equal(pack.challenge.url, "https://slackhack.devpost.com/");
@@ -209,9 +216,40 @@ function testSlackAgentPack() {
   const markdown = formatSlackAgentSubmissionMarkdown(pack);
   assert.match(markdown, /# Incident Zero Agent - Slack Challenge Submission Pack/);
   assert.match(markdown, /Slack Agent Builder Challenge/);
+  assert.match(markdown, /MCP server integration/);
   assert.match(markdown, /3-minute demo video/);
   assert.match(markdown, /No Slack tokens/);
   assert.equal(hasInternalStrategyWording(markdown), false);
+}
+
+function testMcpToolDefinitionsAndCalls() {
+  const tools = createMcpToolDefinitions();
+  assert.ok(tools.length >= 3);
+  assert.ok(tools.some((tool) => tool.name === "incident_zero_brief"));
+  assert.ok(tools.some((tool) => tool.name === "incident_zero_handoff"));
+  assert.ok(tools.some((tool) => tool.name === "incident_zero_storage_preview"));
+  assert.ok(tools.every((tool) => tool.inputSchema && tool.inputSchema.type === "object"));
+
+  const brief = callIncidentTool("incident_zero_brief", {
+    scenarioId: "payments",
+    severity: "high",
+    contained: false
+  });
+  assert.equal(brief.content[0].type, "text");
+  assert.equal(brief.structuredContent.caseId, "CASE-2026-0619-02");
+  assert.equal(brief.structuredContent.scenarioId, "payments");
+  assert.ok(brief.structuredContent.risk > 0);
+  assert.ok(brief.structuredContent.topActions.length > 0);
+
+  const handoff = callIncidentTool("incident_zero_handoff", { scenarioId: "data" });
+  assert.ok(handoff.structuredContent.markdown.includes("Unusual data export"));
+  assert.ok(handoff.content[0].text.includes("Executive Handoff"));
+
+  const storage = callIncidentTool("incident_zero_storage_preview", { scenarioId: "identity" });
+  assert.equal(storage.structuredContent.storagePlan.liveAdapterTarget, "aws-dynamodb");
+  assert.ok(storage.structuredContent.sampleRecords.length > 0);
+
+  assert.throws(() => callIncidentTool("unknown_tool", {}), /Unknown MCP tool/);
 }
 
 function testSlackAgentPackExporter() {
@@ -514,6 +552,7 @@ async function main() {
   testDynamoAdapterAndCloudReadiness();
   testNormalizationAndRisk();
   testTaskShape();
+  testMcpToolDefinitionsAndCalls();
   testSlackAgentPack();
   testSlackAgentPackExporter();
   testStaticDemoExporter();

@@ -31,9 +31,11 @@ const REQUIRED_FILES = [
   "src/cloudReadiness.js",
   "src/dynamoAdapter.js",
   "src/incidentZero.js",
+  "src/mcpTools.js",
   "src/server.js",
   "src/slackAgent.js",
   "src/storage.js",
+  "scripts/incident-zero-mcp-server.mjs",
   "scripts/export-static-demo.js",
   "scripts/export-slack-agent-pack.js",
   "scripts/verify-public.js",
@@ -52,6 +54,7 @@ const SYNTAX_CHECK_FILES = [
   "src/dynamoAdapter.js",
   "src/cloudReadiness.js",
   "src/slackAgent.js",
+  "src/mcpTools.js",
   "src/apiCore.js",
   "src/server.js",
   "public/app.js",
@@ -67,6 +70,7 @@ const SYNTAX_CHECK_FILES = [
   "api/storage-preview.js",
   "scripts/export-static-demo.js",
   "scripts/export-slack-agent-pack.js",
+  "scripts/incident-zero-mcp-server.mjs",
   "scripts/verify-public.js",
   "scripts/verify-dynamodb-live.js",
   "scripts/audit-local-readiness.js",
@@ -111,7 +115,7 @@ function checkNoNodeModules() {
 function checkPackageScripts() {
   const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, "package.json"), "utf8"));
   const scripts = pkg.scripts || {};
-  const required = ["test", "check", "verify:public", "verify:dynamodb"];
+  const required = ["test", "check", "verify:public", "verify:dynamodb", "start:mcp"];
   const missing = required.filter((script) => !scripts[script]);
   return {
     ok: missing.length === 0,

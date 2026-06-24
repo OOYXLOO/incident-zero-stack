@@ -9,6 +9,7 @@ The prototype keeps incident state in deterministic DynamoDB-shaped records so r
 - Multi-scenario cockpit for identity, payment, and data-export incidents.
 - Local API for rebuilding an incident from adjustable risk inputs.
 - Slack-facing agent response layer for slash-command incident briefs.
+- MCP stdio server using the official SDK with incident brief, handoff, and storage-preview tools.
 - Static review fallback for GitHub Pages when `/api/*` routes are not available.
 - Browser UI with action board, SLA windows, evidence ledger, database records, access patterns, stakeholder updates, audit timeline, and cloud proof gates.
 - No credentials, tokens, cookies, billing data, account-owner documents, or private customer data.
@@ -43,6 +44,20 @@ POST /api/slack-agent
 
 Slack agent handoff notes are maintained in [docs/slack_agent_handoff.md](docs/slack_agent_handoff.md).
 Slack challenge submission notes are maintained in [docs/slack_challenge_submission_pack.md](docs/slack_challenge_submission_pack.md).
+
+## MCP Server
+
+```bash
+npm run start:mcp
+```
+
+The MCP server exposes three tools over stdio:
+
+- `incident_zero_brief`
+- `incident_zero_handoff`
+- `incident_zero_storage_preview`
+
+They reuse the same deterministic incident engine as the browser cockpit and Slack slash-command endpoint. No Slack tokens, signing secrets, workspace cookies, private messages, billing records, or customer data are stored in the repository.
 
 ## Static Review Demo
 

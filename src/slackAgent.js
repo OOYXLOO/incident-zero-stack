@@ -194,6 +194,7 @@ function createSlackAgentSubmissionPack({
       "The Vercel handler calls the shared API core.",
       "The API core rebuilds a deterministic incident case from request inputs.",
       "The Slack response renders Block Kit fields, action buttons, evidence, and handoff metadata.",
+      "The MCP server exposes the same incident engine as tools for agent workflows: incident_zero_brief, incident_zero_handoff, and incident_zero_storage_preview.",
       "Live workspace configuration stays outside the repository.",
     ],
     submissionChecklist: [
@@ -206,6 +207,11 @@ function createSlackAgentSubmissionPack({
         label: "Text description",
         status: "ready",
         detail: "Summarize the Slack incident-response agent, deterministic case records, Block Kit brief, and executive handoff.",
+      },
+      {
+        label: "MCP server integration",
+        status: "ready",
+        detail: "Run npm run start:mcp to expose incident_zero_brief, incident_zero_handoff, and incident_zero_storage_preview through the official MCP SDK.",
       },
       {
         label: "3-minute demo video",
@@ -234,7 +240,7 @@ function createSlackAgentSubmissionPack({
       },
     ],
     judgingFit: [
-      "Technological Implementation: shared incident API, Vercel handler, deterministic case model, Block Kit response, and credential guards.",
+      "Technological Implementation: shared incident API, Vercel handler, deterministic case model, Block Kit response, MCP server tools, and credential guards.",
       "Design: one slash command returns a compact executive brief with actions, evidence, and handoff entry points.",
       "Potential Impact: helps small teams coordinate incident response without exposing private Slack messages or credentials.",
       "Quality of Idea: turns incident response into an auditable Slack agent workflow rather than another generic chatbot.",

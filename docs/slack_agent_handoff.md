@@ -7,8 +7,10 @@ Incident Zero Agent adds a Slack-facing response layer to the local incident coc
 - Shared API route: `GET /api/slack-agent` and `POST /api/slack-agent`
 - Vercel function: `api/slack-agent.js`
 - Slack response builder: `src/slackAgent.js`
+- MCP tool bridge: `src/mcpTools.js`
+- MCP stdio server: `npm run start:mcp`
 - Submission pack export: `npm run export:slack-agent-pack -- --public-url <deployment-url> --source-repo-url <repo-url> --markdown-output docs/slack_challenge_submission_pack.md`
-- Tests for response shape, manifest URL generation, slash-command text parsing, local HTTP routing, and the Vercel wrapper
+- Tests for response shape, manifest URL generation, MCP tool calls, slash-command text parsing, local HTTP routing, and the Vercel wrapper
 
 ## Slash Command Examples
 
@@ -34,6 +36,22 @@ npm run export:slack-agent-pack -- --public-url https://your-deployment.example 
 
 Use the `manifest` field from the JSON output as the starting point for a Slack app in a sandbox workspace.
 Use `docs/slack_challenge_submission_pack.md` as the submission checklist, demo-script handoff, architecture note source, and account-owner gate list.
+
+## MCP Tools
+
+The project also exposes the incident engine through an MCP stdio server:
+
+```bash
+npm run start:mcp
+```
+
+Tools:
+
+- `incident_zero_brief`: returns risk, owner, top actions, evidence signals, and handoff timing.
+- `incident_zero_handoff`: returns the executive handoff markdown for a scenario.
+- `incident_zero_storage_preview`: returns DynamoDB-shaped storage records and access-pattern metadata.
+
+This gives the Slack challenge package a concrete MCP integration path without storing workspace tokens, signing secrets, private messages, or customer data in the repository.
 
 ## Demo Flow
 
