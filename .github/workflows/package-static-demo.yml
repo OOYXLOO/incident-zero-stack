@@ -1,0 +1,26 @@
+name: Package static review demo
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Upload static review demo
+        uses: actions/upload-artifact@v4
+        with:
+          name: incident-zero-static-review-demo
+          path: public
