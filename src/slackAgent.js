@@ -2,6 +2,8 @@
 
 const { buildCase, scenarioList } = require("./incidentZero");
 
+const PENDING_PUBLIC_URL = "pending user gate: public HTTPS deployment URL";
+
 function clampText(value, maxLength = 280) {
   const text = String(value || "").replace(/\s+/g, " ").trim();
   return text.length > maxLength ? `${text.slice(0, maxLength - 3)}...` : text;
@@ -151,12 +153,22 @@ function parseSlackText(text = "") {
 function createSlackAgentSubmissionPack({
   publicUrl = "https://example.com",
   sourceRepoUrl = "https://github.com/OOYXLOO/incident-zero-stack",
+  pendingPublicUrl = false,
 } = {}) {
+  const resolvedPublicUrl = pendingPublicUrl ? PENDING_PUBLIC_URL : publicUrl;
+  const manifest = pendingPublicUrl
+    ? {
+        status: "pending-public-url",
+        note: "Deploy a public HTTPS endpoint first, then regenerate the Slack app manifest.",
+        slashCommandUrl: "<public-deployment-url>/api/slack-agent",
+        interactivityRequestUrl: "<public-deployment-url>/api/slack-agent",
+      }
+    : createSlackAppManifest({ publicUrl });
   const scenarios = scenarioList();
   const examples = scenarios.map((scenario) => createSlackAgentResponse({ scenarioId: scenario.id }));
   return {
     projectName: "Incident Zero Agent",
-    publicUrl,
+    publicUrl: resolvedPublicUrl,
     sourceRepoUrl,
     challenge: {
       name: "Slack Agent Builder Challenge",
@@ -164,7 +176,7 @@ function createSlackAgentSubmissionPack({
       deadline: "July 13, 2026 at 5:00pm PDT",
       recommendedTrack: "New Slack Agent",
     },
-    manifest: createSlackAppManifest({ publicUrl }),
+    manifest,
     slashCommandExamples: [
       "/incident-zero scenario=identity severity=critical",
       "/incident-zero scenario=payments contained=false",
@@ -209,6 +221,11 @@ function createSlackAgentSubmissionPack({
         label: "Slack developer sandbox URL",
         status: "user-gated",
         detail: "Requires user-owned Slack developer sandbox access and challenge tester invites.",
+      },
+      {
+        label: "Public HTTPS endpoint",
+        status: pendingPublicUrl ? "user-gated" : "ready",
+        detail: pendingPublicUrl ? "Deploy first, then set slash command and interactivity URLs to /api/slack-agent." : publicUrl,
       },
       {
         label: "Source repository",
@@ -256,6 +273,10 @@ function formatSlackAgentSubmissionMarkdown(pack) {
 
 - Public app URL: ${pack.publicUrl}
 - Source repository: ${pack.sourceRepoUrl}
+${pack.manifest?.status === "pending-public-url" ? `- Manifest draft: pending public deployment URL. Replace \`<public-deployment-url>\` with the deployed HTTPS base URL, then regenerate or import the manifest.
+- Slash command URL: ${pack.manifest.slashCommandUrl}
+- Interactivity request URL: ${pack.manifest.interactivityRequestUrl}
+` : ""}
 
 ## Submission Checklist
 

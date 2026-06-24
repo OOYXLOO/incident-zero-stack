@@ -10,11 +10,16 @@ function argValue(flag, fallback) {
   return process.argv[index + 1];
 }
 
+function hasFlag(flag) {
+  return process.argv.includes(flag);
+}
+
 function main() {
-  const publicUrl = argValue("--public-url", "https://example.com");
+  const pendingPublicUrl = hasFlag("--allow-pending-public-url");
+  const publicUrl = argValue("--public-url", pendingPublicUrl ? "" : "https://example.com");
   const sourceRepoUrl = argValue("--source-repo-url", "https://github.com/OOYXLOO/incident-zero-stack");
   const markdownOutput = argValue("--markdown-output", null);
-  const pack = createSlackAgentSubmissionPack({ publicUrl, sourceRepoUrl });
+  const pack = createSlackAgentSubmissionPack({ publicUrl, sourceRepoUrl, pendingPublicUrl });
   if (markdownOutput) {
     fs.mkdirSync(path.dirname(path.resolve(markdownOutput)), { recursive: true });
     fs.writeFileSync(markdownOutput, formatSlackAgentSubmissionMarkdown(pack), "utf8");

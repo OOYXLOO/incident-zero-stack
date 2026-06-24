@@ -242,6 +242,31 @@ function testSlackAgentPackExporter() {
   assert.ok(markdown.includes("Incident Zero Agent - Slack Challenge Submission Pack"));
   assert.ok(markdown.includes("Slack developer sandbox URL"));
   assert.equal(hasInternalStrategyWording(markdown), false);
+
+  const preGateOutput = path.join(tmpDir, "slack-challenge-pre-gate-pack.md");
+  fs.rmSync(preGateOutput, { force: true });
+  const preGate = childProcess.spawnSync(process.execPath, [
+    "scripts/export-slack-agent-pack.js",
+    "--allow-pending-public-url",
+    "--source-repo-url",
+    "https://github.com/OOYXLOO/incident-zero-stack",
+    "--markdown-output",
+    preGateOutput
+  ], {
+    cwd: path.resolve(__dirname, ".."),
+    encoding: "utf8"
+  });
+
+  assert.equal(preGate.status, 0, preGate.stderr);
+  const preGateJson = JSON.parse(preGate.stdout);
+  assert.equal(preGateJson.publicUrl, "pending user gate: public HTTPS deployment URL");
+  assert.equal(preGateJson.manifest.status, "pending-public-url");
+  assert.equal(fs.existsSync(preGateOutput), true);
+  const preGateMarkdown = fs.readFileSync(preGateOutput, "utf8");
+  assert.ok(preGateMarkdown.includes("Public app URL: pending user gate"));
+  assert.ok(preGateMarkdown.includes("Manifest draft: pending public deployment URL"));
+  assert.ok(preGateMarkdown.includes("<public-deployment-url>/api/slack-agent"));
+  assert.equal(hasInternalStrategyWording(preGateMarkdown), false);
 }
 
 function testStaticDemoExporter() {
