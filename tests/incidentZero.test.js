@@ -291,6 +291,18 @@ function testStaticMarkdownExportIsWiredIntoPublicApp() {
   assert.ok(app.includes("export-markdown"));
 }
 
+function testPagesWorkflowPublishesStaticDemo() {
+  const root = path.resolve(__dirname, "..");
+  const workflowPath = path.join(root, ".github/workflows/pages.yml");
+  assert.equal(fs.existsSync(workflowPath), true);
+  const workflow = fs.readFileSync(workflowPath, "utf8");
+  assert.ok(workflow.includes("actions/upload-pages-artifact"));
+  assert.ok(workflow.includes("actions/deploy-pages"));
+  assert.ok(workflow.includes("path: public"));
+  assert.ok(workflow.includes("pages: write"));
+  assert.ok(workflow.includes("id-token: write"));
+}
+
 function testPathGuard() {
   assert.equal(safePublicPath("/../README.md"), null);
   const indexPath = safePublicPath("/index.html");
@@ -482,6 +494,7 @@ async function main() {
   testStaticDemoExporter();
   testStaticDemoIsWiredIntoPublicApp();
   testStaticMarkdownExportIsWiredIntoPublicApp();
+  testPagesWorkflowPublishesStaticDemo();
   testPathGuard();
   testPublicVerifierHelpers();
   testLiveProofGuards();

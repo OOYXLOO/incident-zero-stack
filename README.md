@@ -52,7 +52,7 @@ npm run export:static-demo
 
 The static export writes `public/static-demo-data.js`. The browser cockpit uses live `/api/*` routes when they exist and falls back to this deterministic snapshot on static hosts such as GitHub Pages. The fallback is for review and walkthroughs only; Slack slash commands still require a public HTTPS API deployment.
 
-GitHub Actions packages the `public/` directory as a static review artifact. Repository Pages must be enabled in GitHub settings before it can be served as a Pages URL.
+GitHub Actions packages the `public/` directory as a static review artifact and includes a Pages deployment workflow for `public/`. Repository Pages may still need to be enabled for GitHub Actions in the repository settings before the Pages URL becomes live.
 
 ## Project Shape
 

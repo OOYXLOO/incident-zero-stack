@@ -14,6 +14,7 @@ const REQUIRED_FILES = [
   ".gitignore",
   ".github/workflows/ci.yml",
   ".github/workflows/package-static-demo.yml",
+  ".github/workflows/pages.yml",
   "api/case.js",
   "api/cloud-readiness.js",
   "api/handoff.js",
