@@ -344,6 +344,23 @@ function testSlackManifestExporter() {
   assert.equal(hasInternalStrategyWording(cli.stdout), false);
 }
 
+function testSlackSubmissionAudit() {
+  const result = childProcess.spawnSync(process.execPath, [
+    "scripts/audit-slack-submission.js",
+    "--public-url",
+    "https://incident-zero.example"
+  ], {
+    cwd: path.resolve(__dirname, ".."),
+    encoding: "utf8"
+  });
+  assert.equal(result.status, 0, result.stderr);
+  assert.ok(result.stdout.includes("PASS public-url"));
+  assert.ok(result.stdout.includes("PASS slack-manifest"));
+  assert.ok(result.stdout.includes("PASS static-review-links"));
+  assert.ok(result.stdout.includes("PASS account-owner-gates"));
+  assert.equal(hasInternalStrategyWording(result.stdout), false);
+}
+
 function testStaticDemoExporter() {
   const tmpDir = path.join(os.tmpdir(), "incident-zero-stack-tests");
   fs.mkdirSync(tmpDir, { recursive: true });
@@ -593,6 +610,7 @@ async function main() {
   testSlackAgentPack();
   testSlackAgentPackExporter();
   testSlackManifestExporter();
+  testSlackSubmissionAudit();
   testStaticDemoExporter();
   testStaticDemoIsWiredIntoPublicApp();
   testStaticMarkdownExportIsWiredIntoPublicApp();
