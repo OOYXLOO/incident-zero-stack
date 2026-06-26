@@ -20,6 +20,7 @@
         <div class="review-actions">
           <a class="review-button primary" href="./">Open static cockpit</a>
           <a class="review-button" href="slack-message-preview.html">View Slack message preview</a>
+          <a class="review-button" href="https://incident-zero-stack.vercel.app/api/slack-agent">Live Slack API</a>
           <a class="review-button" href="https://raw.githubusercontent.com/OOYXLOO/incident-zero-stack/master/docs/slack-agent-architecture.svg">Architecture diagram</a>
         </div>
       </header>
@@ -81,9 +82,9 @@
             <strong>Ready</strong>
             <span>Source repository, static cockpit, architecture diagram, Slack response builder, MCP server, submission pack.</span>
           </div>
-          <div class="readiness-item pending">
-            <strong>Pending deployment</strong>
-            <span>Public HTTPS API URL for <code>/api/slack-agent</code>; GitHub Pages is static review only.</span>
+          <div class="readiness-item ready">
+            <strong>Public Vercel runtime</strong>
+            <span>The live Slack API endpoint is <code>https://incident-zero-stack.vercel.app/api/slack-agent</code>. GitHub Pages is static review only and is not used as the slash-command endpoint.</span>
           </div>
           <div class="readiness-item pending">
             <strong>Pending account gates</strong>
@@ -101,6 +102,8 @@
           <a href="./">Static cockpit</a>
           <a href="static-demo-data.js">Deterministic static data</a>
           <a href="slack-message-preview.html">Slack message preview</a>
+          <a href="https://incident-zero-stack.vercel.app/api/slack-agent">Live Slack API endpoint</a>
+          <a href="https://incident-zero-stack.vercel.app/api/health">Live health check</a>
           <a href="app.js">Browser app bundle</a>
           <a href="https://raw.githubusercontent.com/OOYXLOO/incident-zero-stack/master/docs/slack-agent-architecture.svg">Architecture diagram</a>
           <a href="https://raw.githubusercontent.com/OOYXLOO/incident-zero-stack/master/docs/slack_agent_handoff.md">Slack handoff notes</a>
