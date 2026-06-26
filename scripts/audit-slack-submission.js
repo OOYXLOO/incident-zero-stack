@@ -57,8 +57,10 @@ function checkSlackManifest(publicUrl) {
 function checkStaticReviewLinks() {
   const review = readRel("public/slack-agent-review.html");
   const preview = readRel("public/slack-message-preview.html");
+  const storyboard = readRel("public/demo-storyboard.html");
   const requiredReviewText = [
     "slack-message-preview.html",
+    "demo-storyboard.html",
     "Slack AI and MCP requirements",
     "GitHub Pages is static review only"
   ];
@@ -67,11 +69,18 @@ function checkStaticReviewLinks() {
     "Open handoff",
     "Public prototype boundary"
   ];
+  const requiredStoryboardText = [
+    "Record the Slack Agent Builder demo",
+    "/incident-zero scenario=identity severity=critical",
+    "Final upload checklist",
+    "No sensitive screens"
+  ];
   const missing = [
     ...requiredReviewText.filter((item) => !review.includes(item)),
-    ...requiredPreviewText.filter((item) => !preview.includes(item))
+    ...requiredPreviewText.filter((item) => !preview.includes(item)),
+    ...requiredStoryboardText.filter((item) => !storyboard.includes(item))
   ];
-  return missing.length ? fail("static-review-links", `missing: ${missing.join(", ")}`) : pass("static-review-links", "review and Slack preview linked");
+  return missing.length ? fail("static-review-links", `missing: ${missing.join(", ")}`) : pass("static-review-links", "review, storyboard, and Slack preview linked");
 }
 
 function checkSubmissionMaterials() {

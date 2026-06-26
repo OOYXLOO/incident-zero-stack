@@ -12,6 +12,7 @@
 
 - Static review URL: https://ooyxloo.github.io/incident-zero-stack/
 - Slack agent review page: https://ooyxloo.github.io/incident-zero-stack/slack-agent-review.html
+- Demo storyboard page: https://ooyxloo.github.io/incident-zero-stack/demo-storyboard.html
 - Public Slack API URL: https://incident-zero-stack.vercel.app/api/slack-agent
 - Public Vercel runtime: https://incident-zero-stack.vercel.app
 - Source repository: https://github.com/OOYXLOO/incident-zero-stack

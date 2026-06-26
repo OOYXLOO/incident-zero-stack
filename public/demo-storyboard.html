@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Incident Zero Demo Storyboard</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="review-body">
+    <main class="review-shell storyboard-shell">
+      <header class="review-hero">
+        <nav class="review-nav" aria-label="demo storyboard navigation">
+          <a href="./">Cockpit</a>
+          <a href="slack-agent-review.html">Agent review</a>
+          <a href="slack-message-preview.html">Slack preview</a>
+          <a href="https://github.com/OOYXLOO/incident-zero-stack">Source</a>
+        </nav>
+        <p class="eyebrow">Demo recording storyboard</p>
+        <h1>Record the Slack Agent Builder demo in under three minutes.</h1>
+        <p class="review-lede">This page turns the submission script into a visible recording path: timestamp, screen, voiceover, proof link, and safety boundary. Use it as the public rehearsal surface before inserting the final Slack sandbox clip.</p>
+        <div class="review-actions">
+          <a class="review-button primary" href="https://incident-zero-stack.vercel.app/api/slack-agent">Live Slack API</a>
+          <a class="review-button" href="https://raw.githubusercontent.com/OOYXLOO/incident-zero-stack/master/docs/demo_video_production_pack.md">Production pack</a>
+          <a class="review-button" href="https://raw.githubusercontent.com/OOYXLOO/incident-zero-stack/master/docs/slack_challenge_submission_pack.md">Submission pack</a>
+        </div>
+      </header>
+
+      <section class="storyboard-strip" aria-label="demo constraints">
+        <article>
+          <span>Target length</span>
+          <strong>2:30-2:55</strong>
+          <small>Keep room under the three-minute limit.</small>
+        </article>
+        <article>
+          <span>Required insert</span>
+          <strong>Slack sandbox</strong>
+          <small>Add real slash-command proof after account setup.</small>
+        </article>
+        <article>
+          <span>Runtime proof</span>
+          <strong>Vercel API</strong>
+          <small>Use the public HTTPS endpoint for command runtime.</small>
+        </article>
+        <article>
+          <span>Safety rule</span>
+          <strong>No secrets</strong>
+          <small>Hide tokens, cookies, billing, and private messages.</small>
+        </article>
+      </section>
+
+      <section class="review-section">
+        <div>
+          <p class="eyebrow">Recording timeline</p>
+          <h2>Six shots, one clean story</h2>
+        </div>
+        <div class="storyboard-timeline">
+          <article class="storyboard-shot">
+            <time>0:00 - 0:12</time>
+            <div>
+              <h3>Hook: what the agent does</h3>
+              <p>Show the Slack agent review page and state that one command returns a structured incident brief, evidence signals, due actions, and executive handoff.</p>
+              <a href="slack-agent-review.html">Open review page</a>
+            </div>
+          </article>
+          <article class="storyboard-shot">
+            <time>0:12 - 0:42</time>
+            <div>
+              <h3>Slash command result</h3>
+              <p>Preferred final shot: real Slack sandbox running <code>/incident-zero scenario=identity severity=critical</code>. Rehearsal fallback: the public Slack message preview.</p>
+              <a href="slack-message-preview.html">Open message preview</a>
+            </div>
+          </article>
+          <article class="storyboard-shot">
+            <time>0:42 - 1:20</time>
+            <div>
+              <h3>Same engine in the cockpit</h3>
+              <p>Open the cockpit, run the deterministic demo, and point at risk, owner, top actions, SLA windows, evidence, and audit state.</p>
+              <a href="./">Open cockpit</a>
+            </div>
+          </article>
+          <article class="storyboard-shot">
+            <time>1:20 - 1:55</time>
+            <div>
+              <h3>Handoff and records</h3>
+              <p>Show the executive handoff and DynamoDB-shaped records. Explain that Slack, cockpit, and MCP tools all use the same incident model.</p>
+              <a href="https://incident-zero-stack.vercel.app/api/storage-preview?scenario=identity">Open storage preview API</a>
+            </div>
+          </article>
+          <article class="storyboard-shot">
+            <time>1:55 - 2:25</time>
+            <div>
+              <h3>Architecture and MCP path</h3>
+              <p>Show Slack command, public HTTPS endpoint, shared API core, incident engine, and MCP tools for brief, handoff, and storage preview.</p>
+              <a href="https://raw.githubusercontent.com/OOYXLOO/incident-zero-stack/master/docs/slack-agent-architecture.svg">Open architecture diagram</a>
+            </div>
+          </article>
+          <article class="storyboard-shot">
+            <time>2:25 - 2:50</time>
+            <div>
+              <h3>Safety and submission boundary</h3>
+              <p>Close on the repository boundary: public source, deterministic demo data, review pages, and submission materials only. No workspace secrets or private messages.</p>
+              <a href="https://raw.githubusercontent.com/OOYXLOO/incident-zero-stack/master/docs/slack_challenge_submission_pack.md">Open submission pack</a>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="review-grid" aria-label="voiceover snippets">
+        <article class="review-panel compact-panel">
+          <p class="eyebrow">Opening line</p>
+          <h2>Start fast</h2>
+          <p>"Incident Zero Agent turns one Slack command into a structured incident brief, evidence signals, due actions, and executive handoff."</p>
+        </article>
+        <article class="review-panel compact-panel">
+          <p class="eyebrow">Core proof</p>
+          <h2>Say what is real</h2>
+          <p>"The public Vercel endpoint powers the slash-command runtime. GitHub Pages is the static review surface for judges."</p>
+        </article>
+        <article class="review-panel compact-panel">
+          <p class="eyebrow">Boundary</p>
+          <h2>Close cleanly</h2>
+          <p>"Slack tokens, signing secrets, workspace cookies, payment pages, private messages, and customer records stay outside the repository."</p>
+        </article>
+      </section>
+
+      <section class="review-section">
+        <div>
+          <p class="eyebrow">Final upload checklist</p>
+          <h2>Do not upload until these are true</h2>
+        </div>
+        <div class="readiness-matrix">
+          <div class="readiness-item ready">
+            <strong>Under three minutes</strong>
+            <span>The first 15 seconds explain the agent, and the final clip leaves time for the submission boundary.</span>
+          </div>
+          <div class="readiness-item pending">
+            <strong>Slack sandbox clip inserted</strong>
+            <span>Replace the preview shot with a real sandbox slash command after the account-owner gate is complete.</span>
+          </div>
+          <div class="readiness-item ready">
+            <strong>No sensitive screens</strong>
+            <span>Do not show tokens, cookies, app secrets, billing pages, email inboxes, private messages, or customer data.</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

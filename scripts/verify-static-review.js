@@ -69,8 +69,21 @@ async function checkSlackReviewPage(baseUrl) {
   if (!text.includes("MCP integration path")) return fail("slack-agent-review", "missing MCP requirement mapping");
   if (!text.includes("Architecture diagram")) return fail("slack-agent-review", "missing architecture proof link");
   if (!text.includes("slack-message-preview.html")) return fail("slack-agent-review", "missing Slack message preview link");
+  if (!text.includes("demo-storyboard.html")) return fail("slack-agent-review", "missing demo storyboard link");
   if (!text.includes("GitHub Pages is static review only")) return fail("slack-agent-review", "missing static/API boundary");
   return pass("slack-agent-review", url);
+}
+
+async function checkDemoStoryboard(baseUrl) {
+  const url = `${baseUrl}/demo-storyboard.html`;
+  const { response, text } = await readText(url);
+  if (!response.ok) return fail("demo-storyboard", `${response.status} ${response.statusText}`);
+  if (!text.includes("Record the Slack Agent Builder demo")) return fail("demo-storyboard", "missing page purpose");
+  if (!text.includes("0:12 - 0:42")) return fail("demo-storyboard", "missing Slack command shot timing");
+  if (!text.includes("/incident-zero scenario=identity severity=critical")) return fail("demo-storyboard", "missing slash command example");
+  if (!text.includes("Final upload checklist")) return fail("demo-storyboard", "missing upload checklist");
+  if (!text.includes("No sensitive screens")) return fail("demo-storyboard", "missing safety checklist");
+  return pass("demo-storyboard", url);
 }
 
 async function checkSlackMessagePreview(baseUrl) {
@@ -109,7 +122,7 @@ async function checkStaticData(baseUrl) {
 }
 
 async function run(baseUrl) {
-  const checks = [checkHome, checkSlackReviewPage, checkSlackMessagePreview, checkAppBundle, checkStaticData];
+  const checks = [checkHome, checkSlackReviewPage, checkSlackMessagePreview, checkDemoStoryboard, checkAppBundle, checkStaticData];
   const results = [];
   for (const check of checks) {
     try {
