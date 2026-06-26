@@ -79,6 +79,7 @@ function checkSubmissionMaterials() {
     "docs/slack_challenge_submission_pack.md",
     "docs/devpost_field_pack.md",
     "docs/demo_video_script.md",
+    "docs/demo_video_production_pack.md",
     "docs/slack-agent-architecture.svg",
     "docs/account-owner-deployment-runbook.md"
   ];
@@ -90,6 +91,8 @@ function checkSubmissionMaterials() {
     "Slack Agent Builder Challenge",
     "Incident Zero Agent",
     "slack-message-preview.html",
+    "Demo Video Production Pack",
+    "Final Upload Checklist",
     "slackhack@salesforce.com",
     "testing@devpost.com",
     "No Slack tokens"

@@ -44,6 +44,7 @@ POST /api/slack-agent
 
 Slack agent handoff notes are maintained in [docs/slack_agent_handoff.md](docs/slack_agent_handoff.md).
 Slack challenge submission notes are maintained in [docs/slack_challenge_submission_pack.md](docs/slack_challenge_submission_pack.md).
+Demo-video production notes are maintained in [docs/demo_video_production_pack.md](docs/demo_video_production_pack.md).
 Slack architecture diagram assets are maintained in [docs/slack-agent-architecture.svg](docs/slack-agent-architecture.svg) and [docs/slack_agent_architecture.md](docs/slack_agent_architecture.md).
 Account-owner deployment notes are maintained in [docs/account-owner-deployment-runbook.md](docs/account-owner-deployment-runbook.md).
 The Slack app manifest template is maintained in [docs/slack-app-manifest-template.json](docs/slack-app-manifest-template.json).

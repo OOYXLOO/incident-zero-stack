@@ -121,7 +121,13 @@ Use:
 docs/demo_video_script.md
 ```
 
-Keep the video under three minutes. Start with the public Slack review page, show the Slack message preview, show the cockpit, show the architecture, and insert a real sandbox slash-command clip after the Slack app is created.
+Also use:
+
+```text
+docs/demo_video_production_pack.md
+```
+
+Keep the video under three minutes. Start with the public Slack review page, show the Slack message preview or real Slack sandbox command, show the cockpit, show the architecture, and insert a real sandbox slash-command clip after the Slack app is created. The production pack includes the exact recording timeline, captions, upload checklist, and sensitive-content boundary.
 
 ## Architecture Diagram
 
