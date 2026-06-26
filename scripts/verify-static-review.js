@@ -68,8 +68,20 @@ async function checkSlackReviewPage(baseUrl) {
   if (!text.includes("Slack AI and MCP requirements")) return fail("slack-agent-review", "missing challenge fit section");
   if (!text.includes("MCP integration path")) return fail("slack-agent-review", "missing MCP requirement mapping");
   if (!text.includes("Architecture diagram")) return fail("slack-agent-review", "missing architecture proof link");
+  if (!text.includes("slack-message-preview.html")) return fail("slack-agent-review", "missing Slack message preview link");
   if (!text.includes("GitHub Pages is static review only")) return fail("slack-agent-review", "missing static/API boundary");
   return pass("slack-agent-review", url);
+}
+
+async function checkSlackMessagePreview(baseUrl) {
+  const url = `${baseUrl}/slack-message-preview.html`;
+  const { response, text } = await readText(url);
+  if (!response.ok) return fail("slack-message-preview", `${response.status} ${response.statusText}`);
+  if (!text.includes("Incident Zero Slack Message Preview")) return fail("slack-message-preview", "missing page title");
+  if (!text.includes("/incident-zero scenario=identity severity=critical")) return fail("slack-message-preview", "missing slash command");
+  if (!text.includes("Open handoff")) return fail("slack-message-preview", "missing action button preview");
+  if (!text.includes("Public prototype boundary")) return fail("slack-message-preview", "missing safety boundary");
+  return pass("slack-message-preview", url);
 }
 
 async function checkAppBundle(baseUrl) {
@@ -97,7 +109,7 @@ async function checkStaticData(baseUrl) {
 }
 
 async function run(baseUrl) {
-  const checks = [checkHome, checkSlackReviewPage, checkAppBundle, checkStaticData];
+  const checks = [checkHome, checkSlackReviewPage, checkSlackMessagePreview, checkAppBundle, checkStaticData];
   const results = [];
   for (const check of checks) {
     try {

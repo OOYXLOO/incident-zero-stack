@@ -82,6 +82,12 @@ Slack agent judge-facing review page:
 https://ooyxloo.github.io/incident-zero-stack/slack-agent-review.html
 ```
 
+Static Slack message preview:
+
+```text
+https://ooyxloo.github.io/incident-zero-stack/slack-message-preview.html
+```
+
 Verify it with:
 
 ```bash
