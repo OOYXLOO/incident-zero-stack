@@ -5,6 +5,7 @@ Incident Zero Stack is ready for source review as a local-first incident respons
 ## What Is Ready
 
 - Browser cockpit for incident triage, containment, evidence review, stakeholder updates, audit timeline, and executive handoff.
+- Static GitHub Pages review build: `https://ooyxloo.github.io/incident-zero-stack/`
 - Local API and Vercel-compatible serverless handlers share the same core incident model.
 - Slack-facing agent endpoint returns deterministic incident briefs for slash command review.
 - DynamoDB-shaped records are documented for `CASE`, `ALERT`, `EVIDENCE`, `TASK`, `AUDIT`, `UPDATE`, `METRIC`, and `HANDOFF` entities.
@@ -17,6 +18,7 @@ Incident Zero Stack is ready for source review as a local-first incident respons
 npm test
 npm run check
 npm run audit:local
+npm run verify:static-review -- https://ooyxloo.github.io/incident-zero-stack/
 npm run export:slack-agent-pack -- --public-url <deployment-url>
 ```
 
@@ -29,3 +31,5 @@ npm run verify:public -- --base-url <deployment-url>
 ## Publication Boundary
 
 The repository is safe to publish as source code. Live cloud proof still depends on an account-owner deployment flow for hosting, optional DynamoDB provisioning, screenshots, and final platform submission.
+
+The GitHub Pages URL is a static review surface only. It must not be used as the Slack slash-command URL because it does not provide the `/api/*` runtime.

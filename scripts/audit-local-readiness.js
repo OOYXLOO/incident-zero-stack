@@ -39,6 +39,7 @@ const REQUIRED_FILES = [
   "scripts/export-static-demo.js",
   "scripts/export-slack-agent-pack.js",
   "scripts/verify-public.js",
+  "scripts/verify-static-review.js",
   "scripts/verify-dynamodb-live.js",
   "docs/architecture.svg",
   "docs/demo_video_script.md",
@@ -72,6 +73,7 @@ const SYNTAX_CHECK_FILES = [
   "scripts/export-slack-agent-pack.js",
   "scripts/incident-zero-mcp-server.mjs",
   "scripts/verify-public.js",
+  "scripts/verify-static-review.js",
   "scripts/verify-dynamodb-live.js",
   "scripts/audit-local-readiness.js",
   "tests/incidentZero.test.js"
@@ -115,7 +117,7 @@ function checkNoNodeModules() {
 function checkPackageScripts() {
   const pkg = JSON.parse(fs.readFileSync(path.join(ROOT, "package.json"), "utf8"));
   const scripts = pkg.scripts || {};
-  const required = ["test", "check", "verify:public", "verify:dynamodb", "start:mcp"];
+  const required = ["test", "check", "verify:public", "verify:static-review", "verify:dynamodb", "start:mcp"];
   const missing = required.filter((script) => !scripts[script]);
   return {
     ok: missing.length === 0,

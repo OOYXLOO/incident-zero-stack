@@ -10,7 +10,8 @@
 
 ## Public Links
 
-- Public app URL: pending user gate: public HTTPS deployment URL
+- Static review URL: https://ooyxloo.github.io/incident-zero-stack/
+- Public Slack API URL: pending user gate: public HTTPS deployment URL
 - Source repository: https://github.com/OOYXLOO/incident-zero-stack
 - Manifest draft: pending public deployment URL. Replace `<public-deployment-url>` with the deployed HTTPS base URL, then regenerate or import the manifest.
 - Slash command URL: <public-deployment-url>/api/slack-agent
@@ -28,6 +29,7 @@
 - [ ] Sandbox tester invites: user-gated - Invite slackhack@salesforce.com and testing@devpost.com to the Slack developer sandbox before final submission.
 - [ ] Sandbox payment-method verification: user-gated - Slack sandbox creation requires account-owner payment-method verification; do not store payment data in this repository.
 - [ ] Public HTTPS endpoint: user-gated - Deploy first, then set slash command and interactivity URLs to /api/slack-agent.
+- [x] Static review build: ready - https://ooyxloo.github.io/incident-zero-stack/ is for source/demo review only, not Slack slash-command runtime.
 - [x] Source repository: ready - https://github.com/OOYXLOO/incident-zero-stack
 
 ## Demo Script
@@ -66,6 +68,7 @@
 
 - No Slack tokens, signing secrets, workspace cookies, private messages, customer data, billing records, or credentials are stored in this repository.
 - The generated Slack manifest uses placeholder public URLs until the user configures a real sandbox workspace.
+- The GitHub Pages static review URL is not a Slack API endpoint.
 - Live deployment and Devpost submission remain account-owner gates.
 
 ## External Gates

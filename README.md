@@ -68,6 +68,20 @@ npm run export:static-demo
 
 The static export writes `public/static-demo-data.js`. The browser cockpit uses live `/api/*` routes when they exist and falls back to this deterministic snapshot on static hosts such as GitHub Pages. The fallback is for review and walkthroughs only; Slack slash commands still require a public HTTPS API deployment.
 
+The current static review URL is:
+
+```text
+https://ooyxloo.github.io/incident-zero-stack/
+```
+
+Verify it with:
+
+```bash
+npm run verify:static-review -- https://ooyxloo.github.io/incident-zero-stack/
+```
+
+Do not use the GitHub Pages URL as the Slack slash-command endpoint. It has no `/api/*` runtime.
+
 GitHub Actions packages the `public/` directory as a static review artifact and includes a Pages deployment workflow for `public/`. Repository Pages may still need to be enabled for GitHub Actions in the repository settings before the Pages URL becomes live.
 
 ## Project Shape
