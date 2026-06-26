@@ -50,6 +50,7 @@ The Slack app manifest template is maintained in [docs/slack-app-manifest-templa
 After deploying a public HTTPS API, generate an import-ready Slack manifest with:
 
 ```bash
+npm run print:deployment-gates -- --public-url <public-url>
 npm run export:slack-manifest -- --public-url <public-url>
 ```
 

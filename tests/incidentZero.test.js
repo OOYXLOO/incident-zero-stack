@@ -44,6 +44,10 @@ const {
 const { LocalIncidentStore, createStoragePreview, findCredentialLikeValues } = require("../src/storage");
 const { normalizeBaseUrl, run: runPublicVerification } = require("../scripts/verify-public");
 const { redact, requireLiveWriteApproval } = require("../scripts/verify-dynamodb-live");
+const {
+  buildGateChecklist,
+  printMarkdown: printDeploymentGateMarkdown
+} = require("../scripts/print-deployment-gates");
 
 function hasInternalStrategyWording(text) {
   const internalTerms = ["money" + "-goal", "USD " + "200", "\u8d5a\u94b1"];
@@ -361,6 +365,36 @@ function testSlackSubmissionAudit() {
   assert.equal(hasInternalStrategyWording(result.stdout), false);
 }
 
+function testDeploymentGatePrinter() {
+  const checklist = buildGateChecklist({
+    publicUrl: "https://incident-zero.example/app/",
+    env: {
+      INCIDENT_ZERO_STORAGE: "dynamodb",
+      INCIDENT_ZERO_DYNAMODB_TABLE: "IncidentZeroCases",
+      AWS_REGION: "us-east-1"
+    }
+  });
+  assert.equal(checklist.publicUrl, "https://incident-zero.example/app");
+  assert.equal(checklist.readyForPublicCloudClaim, true);
+  assert.deepEqual(checklist.missingAccountOwnerGates, []);
+  assert.ok(checklist.requiredEnvironmentNames.includes("INCIDENT_ZERO_DYNAMODB_TABLE"));
+  assert.ok(checklist.verificationCommands.some((command) => command.includes("audit:slack-submission")));
+
+  const markdown = printDeploymentGateMarkdown(checklist);
+  assert.ok(markdown.includes("Incident Zero Agent Deployment Gates"));
+  assert.ok(markdown.includes("slackhack@salesforce.com"));
+  assert.ok(markdown.includes("Do not paste Slack tokens"));
+  assert.equal(hasInternalStrategyWording(markdown), false);
+}
+
+function testDeploymentGatePrinterPendingUrl() {
+  const checklist = buildGateChecklist({ env: {} });
+  assert.equal(checklist.publicUrl, "pending account-owner deployment");
+  assert.equal(checklist.readyForPublicCloudClaim, false);
+  assert.ok(checklist.missingAccountOwnerGates.includes("INCIDENT_ZERO_PUBLIC_URL"));
+  assert.ok(checklist.verificationCommands.some((command) => command.includes("https://<public-deployment-url>")));
+}
+
 function testStaticDemoExporter() {
   const tmpDir = path.join(os.tmpdir(), "incident-zero-stack-tests");
   fs.mkdirSync(tmpDir, { recursive: true });
@@ -611,6 +645,8 @@ async function main() {
   testSlackAgentPackExporter();
   testSlackManifestExporter();
   testSlackSubmissionAudit();
+  testDeploymentGatePrinter();
+  testDeploymentGatePrinterPendingUrl();
   testStaticDemoExporter();
   testStaticDemoIsWiredIntoPublicApp();
   testStaticMarkdownExportIsWiredIntoPublicApp();

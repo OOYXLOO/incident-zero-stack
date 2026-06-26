@@ -46,6 +46,12 @@ PASS storage-preview
 PASS cloud-readiness
 ```
 
+Print the non-secret gate checklist for the same deployed URL:
+
+```text
+npm run print:deployment-gates -- --public-url https://<public-deployment-url>
+```
+
 ## Gate 2: Slack App Manifest
 
 After the public HTTPS API is deployed, generate an import-ready Slack manifest:
