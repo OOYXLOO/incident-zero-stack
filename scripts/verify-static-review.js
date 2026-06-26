@@ -65,6 +65,9 @@ async function checkSlackReviewPage(baseUrl) {
   if (!response.ok) return fail("slack-agent-review", `${response.status} ${response.statusText}`);
   if (!text.includes("Incident response briefs")) return fail("slack-agent-review", "missing hero value proposition");
   if (!text.includes("/incident-zero scenario=identity severity=critical")) return fail("slack-agent-review", "missing slash command example");
+  if (!text.includes("Slack AI and MCP requirements")) return fail("slack-agent-review", "missing challenge fit section");
+  if (!text.includes("MCP integration path")) return fail("slack-agent-review", "missing MCP requirement mapping");
+  if (!text.includes("Architecture diagram")) return fail("slack-agent-review", "missing architecture proof link");
   if (!text.includes("GitHub Pages is static review only")) return fail("slack-agent-review", "missing static/API boundary");
   return pass("slack-agent-review", url);
 }
