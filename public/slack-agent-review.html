@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Incident Zero Agent Review</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="review-body">
+    <main class="review-shell">
+      <header class="review-hero">
+        <nav class="review-nav" aria-label="review navigation">
+          <a href="./">Cockpit</a>
+          <a href="https://github.com/OOYXLOO/incident-zero-stack">Source</a>
+          <a href="https://raw.githubusercontent.com/OOYXLOO/incident-zero-stack/master/docs/slack_challenge_submission_pack.md">Submission pack</a>
+        </nav>
+        <p class="eyebrow">Slack agent review</p>
+        <h1>Incident response briefs, evidence signals, and executive handoff from one Slack command.</h1>
+        <p class="review-lede">Incident Zero Agent turns deterministic incident records into a Slack-ready Block Kit response and MCP tool surface without storing workspace tokens, private messages, customer records, or billing data in the repository.</p>
+        <div class="review-actions">
+          <a class="review-button primary" href="./">Open static cockpit</a>
+          <a class="review-button" href="https://raw.githubusercontent.com/OOYXLOO/incident-zero-stack/master/docs/slack-agent-architecture.svg">Architecture diagram</a>
+        </div>
+      </header>
+
+      <section class="review-grid" aria-label="review summary">
+        <article class="review-panel">
+          <p class="eyebrow">Agent command</p>
+          <h2>Slash-command incident brief</h2>
+          <pre class="review-code">/incident-zero scenario=identity severity=critical</pre>
+          <p>The response includes risk, owner, top actions, evidence signals, handoff timing, and action buttons for due tasks and evidence review.</p>
+        </article>
+
+        <article class="review-panel">
+          <p class="eyebrow">MCP tools</p>
+          <h2>Same engine, tool-ready</h2>
+          <ul class="review-list">
+            <li><code>incident_zero_brief</code></li>
+            <li><code>incident_zero_handoff</code></li>
+            <li><code>incident_zero_storage_preview</code></li>
+          </ul>
+          <p>The MCP server exposes the same incident model used by the browser cockpit and Slack endpoint.</p>
+        </article>
+
+        <article class="review-panel">
+          <p class="eyebrow">Safety boundary</p>
+          <h2>No-secret review surface</h2>
+          <p>The public repository contains deterministic demo records, generated review assets, and source code only. Live Slack tokens, signing secrets, workspace cookies, private messages, and customer records stay outside the repository.</p>
+        </article>
+      </section>
+
+      <section class="review-section">
+        <div>
+          <p class="eyebrow">Challenge readiness</p>
+          <h2>Ready now vs. account-owner gates</h2>
+        </div>
+        <div class="readiness-matrix">
+          <div class="readiness-item ready">
+            <strong>Ready</strong>
+            <span>Source repository, static cockpit, architecture diagram, Slack response builder, MCP server, submission pack.</span>
+          </div>
+          <div class="readiness-item pending">
+            <strong>Pending deployment</strong>
+            <span>Public HTTPS API URL for <code>/api/slack-agent</code>; GitHub Pages is static review only.</span>
+          </div>
+          <div class="readiness-item pending">
+            <strong>Pending account gates</strong>
+            <span>Slack developer sandbox, tester invites, short demo video, and final Devpost submission.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="review-section">
+        <div>
+          <p class="eyebrow">Proof links</p>
+          <h2>Review without private access</h2>
+        </div>
+        <div class="proof-list">
+          <a href="./">Static cockpit</a>
+          <a href="static-demo-data.js">Deterministic static data</a>
+          <a href="app.js">Browser app bundle</a>
+          <a href="https://raw.githubusercontent.com/OOYXLOO/incident-zero-stack/master/docs/slack_agent_handoff.md">Slack handoff notes</a>
+          <a href="https://raw.githubusercontent.com/OOYXLOO/incident-zero-stack/master/docs/slack_challenge_submission_pack.md">Submission pack</a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

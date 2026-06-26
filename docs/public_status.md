@@ -6,6 +6,7 @@ Incident Zero Stack is ready for source review as a local-first incident respons
 
 - Browser cockpit for incident triage, containment, evidence review, stakeholder updates, audit timeline, and executive handoff.
 - Static GitHub Pages review build: `https://ooyxloo.github.io/incident-zero-stack/`
+- Slack agent review page: `https://ooyxloo.github.io/incident-zero-stack/slack-agent-review.html`
 - Local API and Vercel-compatible serverless handlers share the same core incident model.
 - Slack-facing agent endpoint returns deterministic incident briefs for slash command review.
 - DynamoDB-shaped records are documented for `CASE`, `ALERT`, `EVIDENCE`, `TASK`, `AUDIT`, `UPDATE`, `METRIC`, and `HANDOFF` entities.

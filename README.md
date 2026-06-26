@@ -74,6 +74,12 @@ The current static review URL is:
 https://ooyxloo.github.io/incident-zero-stack/
 ```
 
+Slack agent judge-facing review page:
+
+```text
+https://ooyxloo.github.io/incident-zero-stack/slack-agent-review.html
+```
+
 Verify it with:
 
 ```bash

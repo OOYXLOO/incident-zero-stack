@@ -55,7 +55,18 @@ async function checkHome(baseUrl) {
   if (!text.includes("Incident Zero Stack")) return fail("home", "missing product title");
   if (!text.includes("static-demo-data.js")) return fail("home", "missing static demo data reference");
   if (!text.includes("app.js")) return fail("home", "missing app bundle reference");
+  if (!text.includes("slack-agent-review.html")) return fail("home", "missing Slack review page link");
   return pass("home", url);
+}
+
+async function checkSlackReviewPage(baseUrl) {
+  const url = `${baseUrl}/slack-agent-review.html`;
+  const { response, text } = await readText(url);
+  if (!response.ok) return fail("slack-agent-review", `${response.status} ${response.statusText}`);
+  if (!text.includes("Incident response briefs")) return fail("slack-agent-review", "missing hero value proposition");
+  if (!text.includes("/incident-zero scenario=identity severity=critical")) return fail("slack-agent-review", "missing slash command example");
+  if (!text.includes("GitHub Pages is static review only")) return fail("slack-agent-review", "missing static/API boundary");
+  return pass("slack-agent-review", url);
 }
 
 async function checkAppBundle(baseUrl) {
@@ -83,7 +94,7 @@ async function checkStaticData(baseUrl) {
 }
 
 async function run(baseUrl) {
-  const checks = [checkHome, checkAppBundle, checkStaticData];
+  const checks = [checkHome, checkSlackReviewPage, checkAppBundle, checkStaticData];
   const results = [];
   for (const check of checks) {
     try {

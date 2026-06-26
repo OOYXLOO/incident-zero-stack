@@ -11,6 +11,7 @@
 ## Public Links
 
 - Static review URL: https://ooyxloo.github.io/incident-zero-stack/
+- Slack agent review page: https://ooyxloo.github.io/incident-zero-stack/slack-agent-review.html
 - Public Slack API URL: pending user gate: public HTTPS deployment URL
 - Source repository: https://github.com/OOYXLOO/incident-zero-stack
 - Manifest draft: pending public deployment URL. Replace `<public-deployment-url>` with the deployed HTTPS base URL, then regenerate or import the manifest.
