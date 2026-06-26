@@ -26,6 +26,11 @@ const handoffFunction = require("../api/handoff");
 const slackAgentFunction = require("../api/slack-agent");
 const storagePreviewFunction = require("../api/storage-preview");
 const {
+  buildImportReadyManifest,
+  normalizePublicUrl: normalizeSlackManifestUrl,
+  validateManifest: validateSlackManifest
+} = require("../scripts/export-slack-manifest");
+const {
   createSlackAgentResponse,
   createSlackAgentSubmissionPack,
   createSlackAppManifest,
@@ -314,6 +319,31 @@ function testSlackAgentPackExporter() {
   assert.equal(hasInternalStrategyWording(preGateMarkdown), false);
 }
 
+function testSlackManifestExporter() {
+  assert.equal(normalizeSlackManifestUrl("https://incident-zero.example/demo/"), "https://incident-zero.example/demo");
+  assert.throws(() => normalizeSlackManifestUrl("http://incident-zero.example"), /https/);
+  assert.throws(() => validateSlackManifest(createSlackAppManifest({ publicUrl: "https://example.com" })), /placeholder/);
+
+  const manifest = buildImportReadyManifest("https://incident-zero.example");
+  assert.equal(manifest.features.slash_commands[0].url, "https://incident-zero.example/api/slack-agent");
+  assert.equal(manifest.settings.interactivity.request_url, "https://incident-zero.example/api/slack-agent");
+  assert.equal(validateSlackManifest(manifest), true);
+  assert.equal(hasInternalStrategyWording(JSON.stringify(manifest)), false);
+
+  const cli = childProcess.spawnSync(process.execPath, [
+    "scripts/export-slack-manifest.js",
+    "--public-url",
+    "https://incident-zero.example"
+  ], {
+    cwd: path.resolve(__dirname, ".."),
+    encoding: "utf8"
+  });
+  assert.equal(cli.status, 0, cli.stderr);
+  const cliManifest = JSON.parse(cli.stdout);
+  assert.equal(cliManifest.features.slash_commands[0].url, "https://incident-zero.example/api/slack-agent");
+  assert.equal(hasInternalStrategyWording(cli.stdout), false);
+}
+
 function testStaticDemoExporter() {
   const tmpDir = path.join(os.tmpdir(), "incident-zero-stack-tests");
   fs.mkdirSync(tmpDir, { recursive: true });
@@ -562,6 +592,7 @@ async function main() {
   testMcpToolDefinitionsAndCalls();
   testSlackAgentPack();
   testSlackAgentPackExporter();
+  testSlackManifestExporter();
   testStaticDemoExporter();
   testStaticDemoIsWiredIntoPublicApp();
   testStaticMarkdownExportIsWiredIntoPublicApp();

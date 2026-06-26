@@ -48,13 +48,27 @@ PASS cloud-readiness
 
 ## Gate 2: Slack App Manifest
 
-Open the manifest template:
+After the public HTTPS API is deployed, generate an import-ready Slack manifest:
+
+```text
+npm run export:slack-manifest -- --public-url https://<public-deployment-url>
+```
+
+The command prints JSON with both Slack endpoint URLs set to:
+
+```text
+https://<public-deployment-url>/api/slack-agent
+```
+
+Copy the JSON output into Slack app manifest import.
+
+Fallback: open the manifest template manually:
 
 ```text
 docs/slack-app-manifest-template.json
 ```
 
-Replace both placeholder URLs:
+and replace both placeholder URLs:
 
 ```text
 https://replace-with-public-deployment.example.com/api/slack-agent
@@ -67,6 +81,8 @@ https://<public-deployment-url>/api/slack-agent
 ```
 
 Then create the Slack app from the manifest in the sandbox workspace.
+
+Do not paste tokens, signing secrets, app secrets, workspace cookies, payment pages, or private customer data into this repository.
 
 ## Gate 3: Slack Sandbox Test
 

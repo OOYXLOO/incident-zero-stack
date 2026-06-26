@@ -47,6 +47,11 @@ Slack challenge submission notes are maintained in [docs/slack_challenge_submiss
 Slack architecture diagram assets are maintained in [docs/slack-agent-architecture.svg](docs/slack-agent-architecture.svg) and [docs/slack_agent_architecture.md](docs/slack_agent_architecture.md).
 Account-owner deployment notes are maintained in [docs/account-owner-deployment-runbook.md](docs/account-owner-deployment-runbook.md).
 The Slack app manifest template is maintained in [docs/slack-app-manifest-template.json](docs/slack-app-manifest-template.json).
+After deploying a public HTTPS API, generate an import-ready Slack manifest with:
+
+```bash
+npm run export:slack-manifest -- --public-url <public-url>
+```
 
 ## MCP Server
 
