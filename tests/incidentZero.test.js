@@ -19,7 +19,8 @@ const {
   scenarioList,
   storageAdapterPlan
 } = require("../src/incidentZero");
-const { handleRequest, safePublicPath } = require("../src/server");
+const serverModule = require("../src/server");
+const { handleRequest, safePublicPath } = serverModule;
 const caseFunction = require("../api/case");
 const cloudReadinessFunction = require("../api/cloud-readiness");
 const handoffFunction = require("../api/handoff");
@@ -460,6 +461,13 @@ function testPathGuard() {
   assert.ok(indexPath.endsWith("public\\index.html") || indexPath.endsWith("public/index.html"));
 }
 
+function testServerDefaultExportIsVercelHandler() {
+  assert.equal(typeof serverModule, "function");
+  assert.equal(serverModule, handleRequest);
+  assert.equal(serverModule.handleRequest, handleRequest);
+  assert.equal(serverModule.safePublicPath, safePublicPath);
+}
+
 function testPublicVerifierHelpers() {
   assert.equal(normalizeBaseUrl("https://example.com/demo/"), "https://example.com/demo");
   assert.throws(() => normalizeBaseUrl("ftp://example.com"), /http/);
@@ -652,6 +660,7 @@ async function main() {
   testStaticMarkdownExportIsWiredIntoPublicApp();
   testPagesWorkflowPublishesStaticDemo();
   testPathGuard();
+  testServerDefaultExportIsVercelHandler();
   testPublicVerifierHelpers();
   testLiveProofGuards();
   await testHttpApi();

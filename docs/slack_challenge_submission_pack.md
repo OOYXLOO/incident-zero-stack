@@ -12,13 +12,14 @@
 
 - Static review URL: https://ooyxloo.github.io/incident-zero-stack/
 - Slack agent review page: https://ooyxloo.github.io/incident-zero-stack/slack-agent-review.html
-- Public Slack API URL: pending user gate: public HTTPS deployment URL
+- Public Slack API URL: https://incident-zero-stack.vercel.app/api/slack-agent
+- Public Vercel runtime: https://incident-zero-stack.vercel.app
 - Source repository: https://github.com/OOYXLOO/incident-zero-stack
 - Account-owner deployment runbook: docs/account-owner-deployment-runbook.md
 - Slack app manifest template: docs/slack-app-manifest-template.json
-- Manifest draft: pending public deployment URL. Replace `<public-deployment-url>` with the deployed HTTPS base URL, then regenerate or import the manifest.
-- Slash command URL: <public-deployment-url>/api/slack-agent
-- Interactivity request URL: <public-deployment-url>/api/slack-agent
+- Import-ready Vercel manifest: docs/slack-app-manifest-vercel-20260627.json
+- Slash command URL: https://incident-zero-stack.vercel.app/api/slack-agent
+- Interactivity request URL: https://incident-zero-stack.vercel.app/api/slack-agent
 
 
 ## Submission Checklist
@@ -31,7 +32,7 @@
 - [ ] Slack developer sandbox URL: user-gated - Requires user-owned Slack developer sandbox access and challenge tester invites.
 - [ ] Sandbox tester invites: user-gated - Invite slackhack@salesforce.com and testing@devpost.com to the Slack developer sandbox before final submission.
 - [ ] Sandbox payment-method verification: user-gated - Slack sandbox creation requires account-owner payment-method verification; do not store payment data in this repository.
-- [ ] Public HTTPS endpoint: user-gated - Deploy first, then set slash command and interactivity URLs to /api/slack-agent.
+- [x] Public HTTPS endpoint: ready - https://incident-zero-stack.vercel.app/api/slack-agent verified with `npm run verify:public -- https://incident-zero-stack.vercel.app`.
 - [x] Static review build: ready - https://ooyxloo.github.io/incident-zero-stack/ is for source/demo review only, not Slack slash-command runtime.
 - [x] Source repository: ready - https://github.com/OOYXLOO/incident-zero-stack
 
@@ -76,9 +77,9 @@ Recommended flow:
 ## Safety Boundary
 
 - No Slack tokens, signing secrets, workspace cookies, private messages, customer data, billing records, or credentials are stored in this repository.
-- The generated Slack manifest uses placeholder public URLs until the user configures a real sandbox workspace.
+- The generated Vercel Slack manifest points slash command and interactivity URLs to `https://incident-zero-stack.vercel.app/api/slack-agent`.
 - The GitHub Pages static review URL is not a Slack API endpoint.
-- Live deployment and Devpost submission remain account-owner gates.
+- Slack sandbox installation, tester invites, demo recording, and Devpost submission remain account-owner gates.
 
 ## External Gates
 

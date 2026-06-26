@@ -87,4 +87,6 @@ if (require.main === module) {
   });
 }
 
-module.exports = { handleRequest, safePublicPath };
+module.exports = handleRequest;
+module.exports.handleRequest = handleRequest;
+module.exports.safePublicPath = safePublicPath;
