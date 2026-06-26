@@ -1,79 +1,155 @@
-# Demo Video Script
+# Slack Challenge Demo Video Script
 
-Target length: 2:30 to 2:50.
+Target length: 2:30 to 2:55.
+
+Use this for the Slack Agent Builder Challenge demo. The script works even before the final Slack sandbox recording is available because it starts from public review pages, then leaves a clean slot for the real Slack command clip once the account-owner gate is complete.
 
 ## 0:00 - 0:15: Open
 
-Show the dashboard.
-
-Voiceover:
+Show:
 
 ```text
-Incident Zero Stack is a database-first response cockpit. It turns an alert into response tasks, evidence records, audit events, stakeholder updates, and an executive handoff packet.
+https://ooyxloo.github.io/incident-zero-stack/slack-agent-review.html
 ```
 
-## 0:15 - 0:45: Run The Scenario
+Voiceover:
 
-Click `Run demo`.
+```text
+Incident Zero Agent turns incident records into a Slack-ready response brief, evidence summary, and executive handoff. The public review page shows the agent path without exposing workspace credentials or private Slack data.
+```
+
+Point at:
+
+- New Slack Agent path
+- MCP integration path
+- Judge-safe proof path
+
+## 0:15 - 0:45: Slash Command Result
+
+Show:
+
+```text
+https://ooyxloo.github.io/incident-zero-stack/slack-message-preview.html
+```
 
 Voiceover:
 
 ```text
-This starts with a weak identity signal, increases evidence confidence as corroborating data arrives, and finishes by marking containment complete.
+One slash command, such as incident-zero scenario identity severity critical, returns a compact Block Kit-style brief. It includes case severity, risk, owner, affected system, next update time, top actions, evidence signals, and action buttons.
+```
+
+Point at:
+
+- Command card
+- Risk and owner fields
+- Open handoff / List due tasks / Show evidence buttons
+- Safety boundary
+
+## 0:45 - 1:20: Working Cockpit
+
+Show:
+
+```text
+https://ooyxloo.github.io/incident-zero-stack/
+```
+
+Click:
+
+```text
+Run demo
+```
+
+Voiceover:
+
+```text
+The Slack response is not a separate mockup. It is generated from the same deterministic case model used by the incident cockpit. The cockpit tracks risk, owners, due windows, evidence confidence, stakeholder updates, and audit history.
 ```
 
 Point at:
 
 - Risk score
-- Affected scope
-- Containment state
+- Action board
+- SLA windows
+- Evidence ledger
 
-## 0:45 - 1:15: Response Work
+## 1:20 - 1:55: Handoff And Records
 
-Show the action board and SLA windows.
+Show:
+
+```text
+Executive handoff panel
+DynamoDB-shaped records panel
+```
 
 Voiceover:
 
 ```text
-The cockpit assigns owners, due windows, acceptance criteria, and customer-safe update paths. The response plan is generated from the same case state that will be stored.
+The agent can summarize what happened because the response state is structured. Case, alert, evidence, task, audit, update, metric, and handoff records all use the same model. The executive handoff is generated from case state, not copied from chat screenshots.
 ```
 
-## 1:15 - 1:55: Database Shape
+Point at:
 
-Show storage adapter plan and DynamoDB-shaped records.
+- HANDOFF output
+- Record entities
+- Evidence confidence
+
+## 1:55 - 2:25: Architecture And MCP
+
+Show:
+
+```text
+https://raw.githubusercontent.com/OOYXLOO/incident-zero-stack/master/docs/slack-agent-architecture.svg
+```
 
 Voiceover:
 
 ```text
-The database is not decorative. Every case becomes operational records: CASE, ALERT, EVIDENCE, TASK, AUDIT, UPDATE, METRIC, and HANDOFF. The local adapter uses the same shape that a DynamoDB adapter would write.
+The slash command posts to a public HTTPS endpoint. The API core rebuilds the incident case, renders a Slack response, and exposes the same engine through MCP tools for agent workflows: incident zero brief, incident zero handoff, and storage preview.
 ```
 
-## 1:55 - 2:20: Architecture
+Point at:
 
-Show the architecture panel and `docs/architecture.svg`.
+- Slack command
+- API core
+- shared incident engine
+- MCP tool surface
+
+## 2:25 - 2:50: Submission Boundary
+
+Show:
+
+```text
+https://raw.githubusercontent.com/OOYXLOO/incident-zero-stack/master/docs/slack_challenge_submission_pack.md
+```
 
 Voiceover:
 
 ```text
-The browser cockpit rebuilds incident state through the Node API. The incident model computes risk, tasks, evidence, and handoff output, then the storage boundary prepares a DynamoDB-compatible record packet.
+The public repository contains source, deterministic demo data, and review assets only. Live Slack tokens, signing secrets, workspace cookies, private messages, customer records, billing data, and final Devpost submission stay in the account-owner flow.
 ```
 
-## 2:20 - 2:45: Export
+Point at:
 
-Open `/api/handoff` and briefly show `/api/case`.
+- Public links
+- Submission checklist
+- External gates
 
-Voiceover:
+## Optional 10-second Slack sandbox insert
+
+After the Slack app is created, replace part of the 0:15 to 0:45 segment with a real sandbox clip:
 
 ```text
-The same state is available through the API and can be exported as an executive handoff markdown packet. That keeps the response auditable instead of spread across screenshots or chat messages.
+/incident-zero scenario=identity severity=critical
 ```
 
-## 2:45 - 2:55: Close
+Show the same fields and buttons in the real Slack workspace.
 
-Return to the dashboard.
+Do not show:
 
-Voiceover:
-
-```text
-Incident Zero Stack keeps the first response hour structured, queryable, and ready for handoff.
-```
+- signing secret
+- bot token
+- app token
+- workspace cookies
+- billing or payment-method pages
+- private messages
+- customer data

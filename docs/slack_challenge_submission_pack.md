@@ -37,11 +37,17 @@
 
 ## Demo Script
 
-1. Open the public cockpit and show the deterministic incident case.
-2. Run the Slack command example in the sandbox workspace.
-3. Point out the agent brief, top actions, evidence signals, and handoff buttons.
-4. Open the executive handoff and explain that it is generated from case records, not copied from chat.
-5. Close with the security boundary: no credentials or private workspace data are stored in the repository.
+Use `docs/demo_video_script.md`.
+
+Recommended flow:
+
+1. Open the Slack agent review page.
+2. Show the static Slack message preview.
+3. Open the public cockpit and run the deterministic incident demo.
+4. Show handoff output and structured records.
+5. Show the architecture diagram and MCP tool surface.
+6. Insert a real Slack sandbox command clip after account-owner setup.
+7. Close with the security boundary: no credentials or private workspace data are stored in the repository.
 
 ## Architecture Notes
 
