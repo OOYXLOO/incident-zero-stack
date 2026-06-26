@@ -1,0 +1,39 @@
+{
+  "display_information": {
+    "name": "Incident Zero Agent",
+    "description": "Incident response briefings, evidence summaries, and executive handoff from deterministic case records.",
+    "background_color": "#111827"
+  },
+  "features": {
+    "bot_user": {
+      "display_name": "Incident Zero",
+      "always_online": false
+    },
+    "slash_commands": [
+      {
+        "command": "/incident-zero",
+        "url": "https://replace-with-public-deployment.example.com/api/slack-agent",
+        "description": "Generate an incident response brief",
+        "usage_hint": "scenario=identity severity=critical",
+        "should_escape": false
+      }
+    ]
+  },
+  "oauth_config": {
+    "scopes": {
+      "bot": [
+        "commands",
+        "chat:write"
+      ]
+    }
+  },
+  "settings": {
+    "interactivity": {
+      "is_enabled": true,
+      "request_url": "https://replace-with-public-deployment.example.com/api/slack-agent"
+    },
+    "org_deploy_enabled": false,
+    "socket_mode_enabled": false,
+    "token_rotation_enabled": false
+  }
+}
