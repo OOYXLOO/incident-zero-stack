@@ -6,6 +6,7 @@
 - URL: https://slackhack.devpost.com/
 - Deadline: July 13, 2026 at 5:00pm PDT
 - Recommended track: New Slack Agent
+- Sandbox tester invites: slackhack@salesforce.com, testing@devpost.com
 
 ## Public Links
 
@@ -24,6 +25,8 @@
 - [ ] 3-minute demo video: user-gated - Requires a visible Slack sandbox or local-to-public walkthrough recording.
 - [x] Architecture diagram: ready - Use docs/slack-agent-architecture.svg and docs/slack_agent_architecture.md.
 - [ ] Slack developer sandbox URL: user-gated - Requires user-owned Slack developer sandbox access and challenge tester invites.
+- [ ] Sandbox tester invites: user-gated - Invite slackhack@salesforce.com and testing@devpost.com to the Slack developer sandbox before final submission.
+- [ ] Sandbox payment-method verification: user-gated - Slack sandbox creation requires account-owner payment-method verification; do not store payment data in this repository.
 - [ ] Public HTTPS endpoint: user-gated - Deploy first, then set slash command and interactivity URLs to /api/slack-agent.
 - [x] Source repository: ready - https://github.com/OOYXLOO/incident-zero-stack
 
@@ -70,5 +73,7 @@
 - Create Slack app from the generated manifest.
 - Set slash command and interactivity URLs to the deployed /api/slack-agent endpoint.
 - Add the app to a Slack sandbox workspace.
+- Complete Slack sandbox payment-method verification in the account-owner browser session.
+- Invite slackhack@salesforce.com and testing@devpost.com to the Slack sandbox workspace.
 - Record a short demo video under three minutes.
 - Submit the public app URL, source repository, demo, architecture diagram, and Slack sandbox URL on the challenge platform.

@@ -200,6 +200,7 @@ function testSlackAgentPack() {
   });
   assert.equal(pack.examples.length, scenarioList().length);
   assert.ok(pack.architectureNotes.some((note) => note.includes("/api/slack-agent")));
+  assert.ok(pack.architectureNotes.some((note) => note.includes("docs/slack-agent-architecture.svg")));
   assert.ok(pack.architectureNotes.some((note) => note.includes("MCP server")));
   assert.ok(pack.judgingFit.some((item) => item.includes("MCP")));
   assert.ok(pack.submissionChecklist.some((item) => item.label === "MCP server integration" && item.status === "ready"));
@@ -207,15 +208,21 @@ function testSlackAgentPack() {
   assert.equal(pack.challenge.name, "Slack Agent Builder Challenge");
   assert.equal(pack.challenge.url, "https://slackhack.devpost.com/");
   assert.ok(pack.challenge.deadline.includes("July 13, 2026"));
+  assert.deepEqual(pack.challenge.sandboxTesterEmails, ["slackhack@salesforce.com", "testing@devpost.com"]);
   assert.ok(pack.submissionChecklist.some((item) => item.label === "3-minute demo video" && item.status === "user-gated"));
   assert.ok(pack.submissionChecklist.some((item) => item.label === "Architecture diagram" && item.status === "ready"));
+  assert.ok(pack.submissionChecklist.some((item) => item.label === "Architecture diagram" && item.detail.includes("docs/slack-agent-architecture.svg")));
   assert.ok(pack.submissionChecklist.some((item) => item.label === "Slack developer sandbox URL" && item.status === "user-gated"));
+  assert.ok(pack.submissionChecklist.some((item) => item.label === "Sandbox tester invites" && item.detail.includes("slackhack@salesforce.com")));
+  assert.ok(pack.submissionChecklist.some((item) => item.label === "Sandbox payment-method verification" && item.status === "user-gated"));
   assert.ok(pack.submissionChecklist.some((item) => item.label === "Source repository" && item.status === "ready"));
   assert.ok(pack.safetyBoundary.some((item) => item.includes("No Slack tokens")));
 
   const markdown = formatSlackAgentSubmissionMarkdown(pack);
   assert.match(markdown, /# Incident Zero Agent - Slack Challenge Submission Pack/);
   assert.match(markdown, /Slack Agent Builder Challenge/);
+  assert.match(markdown, /slackhack@salesforce\.com/);
+  assert.match(markdown, /payment-method verification/);
   assert.match(markdown, /MCP server integration/);
   assert.match(markdown, /3-minute demo video/);
   assert.match(markdown, /No Slack tokens/);

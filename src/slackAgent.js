@@ -175,6 +175,7 @@ function createSlackAgentSubmissionPack({
       url: "https://slackhack.devpost.com/",
       deadline: "July 13, 2026 at 5:00pm PDT",
       recommendedTrack: "New Slack Agent",
+      sandboxTesterEmails: ["slackhack@salesforce.com", "testing@devpost.com"],
     },
     manifest,
     slashCommandExamples: [
@@ -190,6 +191,8 @@ function createSlackAgentSubmissionPack({
       "Close with the security boundary: no credentials or private workspace data are stored in the repository.",
     ],
     architectureNotes: [
+      "Submission diagram: docs/slack-agent-architecture.svg",
+      "Diagram notes: docs/slack_agent_architecture.md",
       "The slash command posts to /api/slack-agent.",
       "The Vercel handler calls the shared API core.",
       "The API core rebuilds a deterministic incident case from request inputs.",
@@ -221,12 +224,22 @@ function createSlackAgentSubmissionPack({
       {
         label: "Architecture diagram",
         status: "ready",
-        detail: "Use the architecture notes in this pack for the diagram labels.",
+        detail: "Use docs/slack-agent-architecture.svg and docs/slack_agent_architecture.md.",
       },
       {
         label: "Slack developer sandbox URL",
         status: "user-gated",
         detail: "Requires user-owned Slack developer sandbox access and challenge tester invites.",
+      },
+      {
+        label: "Sandbox tester invites",
+        status: "user-gated",
+        detail: "Invite slackhack@salesforce.com and testing@devpost.com to the Slack developer sandbox before final submission.",
+      },
+      {
+        label: "Sandbox payment-method verification",
+        status: "user-gated",
+        detail: "Slack sandbox creation requires account-owner payment-method verification; do not store payment data in this repository.",
       },
       {
         label: "Public HTTPS endpoint",
@@ -255,6 +268,8 @@ function createSlackAgentSubmissionPack({
       "Create Slack app from the generated manifest.",
       "Set slash command and interactivity URLs to the deployed /api/slack-agent endpoint.",
       "Add the app to a Slack sandbox workspace.",
+      "Complete Slack sandbox payment-method verification in the account-owner browser session.",
+      "Invite slackhack@salesforce.com and testing@devpost.com to the Slack sandbox workspace.",
       "Record a short demo video under three minutes.",
       "Submit the public app URL, source repository, demo, architecture diagram, and Slack sandbox URL on the challenge platform.",
     ],
@@ -274,6 +289,7 @@ function formatSlackAgentSubmissionMarkdown(pack) {
 - URL: ${pack.challenge.url}
 - Deadline: ${pack.challenge.deadline}
 - Recommended track: ${pack.challenge.recommendedTrack}
+- Sandbox tester invites: ${pack.challenge.sandboxTesterEmails.join(", ")}
 
 ## Public Links
 
