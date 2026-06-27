@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Incident Zero Agent final judge one-page</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell static-page">
+      <section class="workbench full-width">
+        <header class="top-bar">
+          <div>
+            <p class="eyebrow">Slack Agent Builder Challenge</p>
+            <h1>Incident Zero Agent final judge one-page</h1>
+            <p class="summary">A New Slack Agent path for incident response: one command returns a structured brief, evidence signals, action buttons, and an executive handoff while the same engine exposes MCP tools for agent workflows.</p>
+          </div>
+          <div class="status-strip" aria-label="submission status">
+            <span>New Slack Agent</span>
+            <span>MCP-ready</span>
+            <span>Public endpoint</span>
+          </div>
+        </header>
+
+        <section class="data-grid">
+          <article class="panel span-2">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Reviewer fast path</p>
+                <h2>Open these first</h2>
+              </div>
+            </div>
+            <ol class="timeline">
+              <li><a class="text-link" href="slack-agent-review.html">Slack agent review page</a> for challenge fit, static preview, and architecture links.</li>
+              <li><a class="text-link" href="slack-message-preview.html">Slack message preview</a> for the command result shape.</li>
+              <li><a class="text-link" href="demo-storyboard.html">Demo storyboard</a> for the recording path and sensitive-screen boundary.</li>
+              <li><a class="text-link" href="https://incident-zero-stack.vercel.app/api/slack-agent">Public Slack API endpoint</a> for the deployed command response.</li>
+            </ol>
+          </article>
+
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Challenge fit</p>
+                <h2>Why this is a Slack agent</h2>
+              </div>
+            </div>
+            <ul class="evidence-list">
+              <li>Slash-command flow: <code>/incident-zero scenario=identity severity=critical</code>.</li>
+              <li>Block Kit response with actions, evidence, and handoff metadata.</li>
+              <li>MCP server integration through <code>incident_zero_brief</code>, <code>incident_zero_handoff</code>, and <code>incident_zero_storage_preview</code>.</li>
+              <li>Shared incident engine across Slack, Vercel API, browser cockpit, and MCP tools.</li>
+            </ul>
+          </article>
+
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Public proof</p>
+                <h2>What is already verifiable</h2>
+              </div>
+            </div>
+            <ul class="evidence-list">
+              <li>Production endpoint: <code>https://incident-zero-stack.vercel.app/api/slack-agent</code>.</li>
+              <li>Static review pages are published on GitHub Pages.</li>
+              <li>Architecture diagram and manifest drafts are in the repository.</li>
+              <li>Submission audit covers endpoint shape, demo assets, review links, and account-owner gates.</li>
+            </ul>
+          </article>
+
+          <article class="panel span-2">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Slack sandbox boundary</p>
+                <h2>What still needs account-owner action</h2>
+              </div>
+            </div>
+            <p>No Slack tokens, signing secrets, cookies, private messages, workspace exports, payment data, or customer records are stored in this repository.</p>
+            <p>Before final submission, create the Slack sandbox app from the manifest, invite <code>slackhack@salesforce.com</code> and <code>testing@devpost.com</code>, record the real command flow, and submit the final Devpost entry from the account-owner browser session.</p>
+          </article>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>

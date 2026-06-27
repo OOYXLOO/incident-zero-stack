@@ -83,6 +83,23 @@ function checkStaticReviewLinks() {
   return missing.length ? fail("static-review-links", `missing: ${missing.join(", ")}`) : pass("static-review-links", "review, storyboard, and Slack preview linked");
 }
 
+function checkFinalJudgePage() {
+  const page = readRel("public/slack-final-judge.html");
+  const required = [
+    "Incident Zero Agent final judge one-page",
+    "Slack Agent Builder Challenge",
+    "New Slack Agent",
+    "MCP server integration",
+    "Slack sandbox boundary",
+    "No Slack tokens",
+    "https://incident-zero-stack.vercel.app/api/slack-agent",
+    "slack-agent-review.html",
+    "demo-storyboard.html"
+  ];
+  const missing = required.filter((item) => !page.includes(item));
+  return missing.length ? fail("final-judge-page", `missing: ${missing.join(", ")}`) : pass("final-judge-page", "final judge one-page ready");
+}
+
 function checkSubmissionMaterials() {
   const files = [
     "docs/slack_challenge_submission_pack.md",
@@ -146,6 +163,7 @@ function run({ publicUrl }) {
     checkPublicUrl(publicUrl),
     checkSlackManifest(publicUrl),
     checkStaticReviewLinks(),
+    checkFinalJudgePage(),
     checkDemoVideoAssets(),
     checkSubmissionMaterials(),
     checkAccountOwnerGates()

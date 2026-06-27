@@ -373,6 +373,19 @@ function testSlackManifestExporter() {
 }
 
 function testSlackSubmissionAudit() {
+  const root = path.resolve(__dirname, "..");
+  const finalJudge = fs.readFileSync(path.join(root, "public/slack-final-judge.html"), "utf8");
+  assert.ok(finalJudge.includes("Incident Zero Agent final judge one-page"));
+  assert.ok(finalJudge.includes("Slack Agent Builder Challenge"));
+  assert.ok(finalJudge.includes("New Slack Agent"));
+  assert.ok(finalJudge.includes("MCP server integration"));
+  assert.ok(finalJudge.includes("Slack sandbox boundary"));
+  assert.ok(finalJudge.includes("No Slack tokens"));
+  assert.ok(finalJudge.includes("https://incident-zero-stack.vercel.app/api/slack-agent"));
+  assert.ok(finalJudge.includes("slack-agent-review.html"));
+  assert.ok(finalJudge.includes("demo-storyboard.html"));
+  assert.equal(hasInternalStrategyWording(finalJudge), false);
+
   const result = childProcess.spawnSync(process.execPath, [
     "scripts/audit-slack-submission.js",
     "--public-url",
@@ -386,6 +399,7 @@ function testSlackSubmissionAudit() {
   assert.ok(result.stdout.includes("PASS slack-manifest"));
   assert.ok(result.stdout.includes("PASS static-review-links"));
   assert.ok(result.stdout.includes("PASS demo-video-assets"));
+  assert.ok(result.stdout.includes("PASS final-judge-page"));
   assert.ok(result.stdout.includes("PASS account-owner-gates"));
   assert.equal(hasInternalStrategyWording(result.stdout), false);
 }
