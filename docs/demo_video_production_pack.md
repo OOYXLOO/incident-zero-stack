@@ -58,6 +58,12 @@ Default output:
 C:\Users\YXL\.codex\tmp\incident-zero-stack\demo-storyboard-video
 ```
 
+After rendering with the local Python/imageio fallback workflow, the current 1080p rehearsal video file is:
+
+```text
+C:\Users\YXL\.codex\tmp\incident-zero-stack\demo-storyboard-video\incident-zero-demo-storyboard-1080p.mp4
+```
+
 If `ffmpeg` is available on the machine, add `--render` to attempt an MP4 render:
 
 ```text

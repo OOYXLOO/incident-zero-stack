@@ -135,6 +135,14 @@ docs/demo_video_production_pack.md
 
 Keep the video under three minutes. Start with the public Slack review page, show the Slack message preview or real Slack sandbox command, show the cockpit, show the architecture, and insert a real sandbox slash-command clip after the Slack app is created. The production pack includes the exact recording timeline, captions, upload checklist, and sensitive-content boundary.
 
+Local public-only rehearsal MP4:
+
+```text
+C:\Users\YXL\.codex\tmp\incident-zero-stack\demo-storyboard-video\incident-zero-demo-storyboard-1080p.mp4
+```
+
+This file is a rehearsal/fallback asset only. The final challenge video should include a real Slack sandbox command result after the app is installed.
+
 ## Architecture Diagram
 
 Use:

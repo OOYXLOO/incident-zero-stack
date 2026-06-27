@@ -20,6 +20,7 @@
 - Slack app manifest template: docs/slack-app-manifest-template.json
 - Import-ready Vercel manifest: docs/slack-app-manifest-vercel-20260627.json
 - Demo video production pack: docs/demo_video_production_pack.md
+- Local public-only rehearsal MP4: C:\Users\YXL\.codex\tmp\incident-zero-stack\demo-storyboard-video\incident-zero-demo-storyboard-1080p.mp4
 - Slash command URL: https://incident-zero-stack.vercel.app/api/slack-agent
 - Interactivity request URL: https://incident-zero-stack.vercel.app/api/slack-agent
 
@@ -41,6 +42,8 @@
 ## Demo Script
 
 Use `docs/demo_video_script.md` for the narration and `docs/demo_video_production_pack.md` for the final recording checklist, timeline, captions, and sensitive-content boundary.
+
+The local fallback rehearsal video is `incident-zero-demo-storyboard-1080p.mp4` under `C:\Users\YXL\.codex\tmp\incident-zero-stack\demo-storyboard-video`. It is a public-only rehearsal asset. Replace or supplement the command-result segment with a real Slack sandbox clip before final challenge submission.
 
 Recommended flow:
 

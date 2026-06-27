@@ -385,6 +385,7 @@ function testSlackSubmissionAudit() {
   assert.ok(result.stdout.includes("PASS public-url"));
   assert.ok(result.stdout.includes("PASS slack-manifest"));
   assert.ok(result.stdout.includes("PASS static-review-links"));
+  assert.ok(result.stdout.includes("PASS demo-video-assets"));
   assert.ok(result.stdout.includes("PASS account-owner-gates"));
   assert.equal(hasInternalStrategyWording(result.stdout), false);
 }

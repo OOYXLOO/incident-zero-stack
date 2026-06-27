@@ -110,6 +110,21 @@ function checkSubmissionMaterials() {
   return missing.length ? fail("submission-materials", `missing: ${missing.join(", ")}`) : pass("submission-materials", `${files.length} files ready`);
 }
 
+function checkDemoVideoAssets() {
+  const pack = readRel("docs/demo_video_production_pack.md");
+  const submission = readRel("docs/slack_challenge_submission_pack.md");
+  const devpost = readRel("docs/devpost_field_pack.md");
+  const text = [pack, submission, devpost].join("\n");
+  const required = [
+    "build:demo-storyboard-video",
+    "incident-zero-demo-storyboard-1080p.mp4",
+    "public-only rehearsal",
+    "real Slack sandbox"
+  ];
+  const missing = required.filter((item) => !text.includes(item));
+  return missing.length ? fail("demo-video-assets", `missing: ${missing.join(", ")}`) : pass("demo-video-assets", "fallback MP4 workflow and Slack sandbox boundary documented");
+}
+
 function checkAccountOwnerGates() {
   const runbook = readRel("docs/account-owner-deployment-runbook.md");
   const gates = [
@@ -131,6 +146,7 @@ function run({ publicUrl }) {
     checkPublicUrl(publicUrl),
     checkSlackManifest(publicUrl),
     checkStaticReviewLinks(),
+    checkDemoVideoAssets(),
     checkSubmissionMaterials(),
     checkAccountOwnerGates()
   ];
