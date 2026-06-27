@@ -46,6 +46,7 @@ const REQUIRED_FILES = [
   "docs/demo_video_script.md",
   "docs/devpost_field_pack.md",
   "docs/h0_submission_pack.md",
+  "docs/h0_v0_aws_handoff_pack.md",
   "docs/release_readiness.md",
   "docs/slack_agent_handoff.md",
   "docs/vercel_deployment_notes.md"

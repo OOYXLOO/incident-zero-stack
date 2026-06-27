@@ -50,6 +50,7 @@ function checkPublicUrl(publicUrl) {
 function checkRequiredFiles() {
   const files = [
     "docs/h0_submission_pack.md",
+    "docs/h0_v0_aws_handoff_pack.md",
     "docs/aws-dynamodb-single-table-design.md",
     "docs/CLOUD_PROOF_REQUIRED.md",
     "docs/vercel_deployment_notes.md",
@@ -86,6 +87,7 @@ function checkSubmissionPack(publicUrl) {
 function checkCloudBoundary() {
   const files = [
     "docs/h0_submission_pack.md",
+    "docs/h0_v0_aws_handoff_pack.md",
     "docs/CLOUD_PROOF_REQUIRED.md",
     "docs/vercel-env-template.md",
     "src/cloudReadiness.js",
@@ -101,6 +103,21 @@ function checkCloudBoundary() {
   ];
   const missing = required.filter((item) => !text.includes(item));
   return missing.length ? fail("cloud-boundary", `missing: ${missing.join(", ")}`) : pass("cloud-boundary", "secret boundary and live-write guard documented");
+}
+
+function checkV0AwsHandoff() {
+  const pack = readRel("docs/h0_v0_aws_handoff_pack.md");
+  const required = [
+    "v0 Prompt",
+    "v0 Review Checklist",
+    "AWS DynamoDB Proof Checklist",
+    "Account-Owner Command Sequence",
+    "Demo Recording Script",
+    "Devpost Field Addendum",
+    "Do not paste secrets"
+  ];
+  const missing = required.filter((item) => !pack.includes(item));
+  return missing.length ? fail("v0-aws-handoff", `missing: ${missing.join(", ")}`) : pass("v0-aws-handoff", "v0 prompt, AWS proof, and demo handoff ready");
 }
 
 function checkApiCoverage() {
@@ -121,6 +138,7 @@ function run({ publicUrl }) {
     checkRequiredFiles(),
     checkSubmissionPack(publicUrl || ""),
     checkCloudBoundary(),
+    checkV0AwsHandoff(),
     checkApiCoverage()
   ];
 }

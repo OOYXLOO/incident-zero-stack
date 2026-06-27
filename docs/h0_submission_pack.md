@@ -92,6 +92,12 @@ Cloud proof gate:
 https://raw.githubusercontent.com/OOYXLOO/incident-zero-stack/master/docs/CLOUD_PROOF_REQUIRED.md
 ```
 
+v0 + AWS handoff pack:
+
+```text
+https://raw.githubusercontent.com/OOYXLOO/incident-zero-stack/master/docs/h0_v0_aws_handoff_pack.md
+```
+
 ## API Review Paths
 
 ```text
@@ -112,6 +118,12 @@ npm run check
 npm run audit:local
 npm run audit:h0-submission -- --public-url https://incident-zero-stack.vercel.app
 npm run verify:public -- https://incident-zero-stack.vercel.app
+```
+
+Use the v0 and AWS account-owner handoff pack before recording the final demo:
+
+```text
+docs/h0_v0_aws_handoff_pack.md
 ```
 
 ## Account-Owner Cloud Gates
