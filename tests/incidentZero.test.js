@@ -662,6 +662,13 @@ async function testVercelFunctions() {
   });
   assert.equal(slackResponse.status, 200);
   assert.equal(JSON.parse(slackResponse.body).metadata.scenarioId, "data");
+
+  const slackHeadResponse = await invokeVercelFunction(slackAgentFunction, {
+    method: "HEAD",
+    url: "/api/slack-agent"
+  });
+  assert.equal(slackHeadResponse.status, 200);
+  assert.equal(slackHeadResponse.body, "");
 }
 
 async function main() {

@@ -15,15 +15,27 @@ function sendResult(response, result) {
   response.end(result.body);
 }
 
+function sendHeadResult(response, result) {
+  response.statusCode = result.status;
+  response.setHeader("content-type", result.type);
+  response.setHeader("cache-control", "no-store");
+  response.end("");
+}
+
 function handleVercelRequest(endpoint, request, response) {
   try {
     const url = new URL(request.url || `/${endpoint}`, "http://127.0.0.1");
+    const method = request.method || "GET";
     const result = handleApiRequest({
-      method: request.method || "GET",
+      method: method === "HEAD" ? "GET" : method,
       pathname: endpoint,
       searchParams: url.searchParams,
       bodyText: readBodyText(request)
     });
+    if (method === "HEAD") {
+      sendHeadResult(response, result);
+      return;
+    }
     sendResult(response, result);
   } catch (error) {
     sendResult(response, {
@@ -36,5 +48,6 @@ function handleVercelRequest(endpoint, request, response) {
 
 module.exports = {
   handleVercelRequest,
-  readBodyText
+  readBodyText,
+  sendHeadResult
 };
