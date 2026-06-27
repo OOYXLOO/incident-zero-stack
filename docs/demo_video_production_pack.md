@@ -44,6 +44,28 @@ https://raw.githubusercontent.com/OOYXLOO/incident-zero-stack/master/docs/slack_
 
 6. Slack sandbox workspace after account-owner setup.
 
+## Generated Storyboard Assets
+
+For a public-only rehearsal package, generate deterministic storyboard slides outside the repository:
+
+```text
+npm run build:demo-storyboard-video -- --public-url https://incident-zero-stack.vercel.app
+```
+
+Default output:
+
+```text
+C:\Users\YXL\.codex\tmp\incident-zero-stack\demo-storyboard-video
+```
+
+If `ffmpeg` is available on the machine, add `--render` to attempt an MP4 render:
+
+```text
+npm run build:demo-storyboard-video -- --public-url https://incident-zero-stack.vercel.app --render
+```
+
+The generated storyboard is a rehearsal or fallback asset only. The final challenge video should still include a real Slack sandbox command result when that gate is complete.
+
 ## Timeline
 
 ### 0:00 - 0:12: Hook

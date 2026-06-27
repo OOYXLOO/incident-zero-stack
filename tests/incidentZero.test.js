@@ -49,10 +49,33 @@ const {
   buildGateChecklist,
   printMarkdown: printDeploymentGateMarkdown
 } = require("../scripts/print-deployment-gates");
+const {
+  buildStoryboard,
+  renderSlideSvg,
+  safeSegmentName
+} = require("../scripts/render-demo-storyboard-video");
 
 function hasInternalStrategyWording(text) {
   const internalTerms = ["money" + "-goal", "USD " + "200", "\u8d5a\u94b1"];
   return internalTerms.some((term) => String(text).toLowerCase().includes(term.toLowerCase()));
+}
+
+function testDemoStoryboardVideoPlan() {
+  const storyboard = buildStoryboard({ publicUrl: "https://incident-zero-stack.vercel.app" });
+  assert.equal(storyboard.length, 6);
+  assert.ok(storyboard.every((slide) => slide.durationSeconds > 0));
+  assert.ok(storyboard.some((slide) => slide.title.includes("Slack-ready")));
+  assert.ok(storyboard.some((slide) => slide.url === "https://incident-zero-stack.vercel.app/api/slack-agent"));
+  assert.equal(hasInternalStrategyWording(JSON.stringify(storyboard)), false);
+
+  const svg = renderSlideSvg(storyboard[0], { width: 1920, height: 1080, index: 0, total: storyboard.length });
+  assert.ok(svg.includes("<svg"));
+  assert.ok(svg.includes("Incident Zero Agent"));
+  assert.ok(svg.includes("No tokens"));
+  assert.equal(hasInternalStrategyWording(svg), false);
+
+  assert.equal(safeSegmentName("Slack command result"), "slack-command-result");
+  assert.equal(safeSegmentName("API / MCP + Records"), "api-mcp-records");
 }
 
 function testDefaultCase() {
@@ -651,6 +674,7 @@ async function main() {
   testMcpToolDefinitionsAndCalls();
   testSlackAgentPack();
   testSlackAgentPackExporter();
+  testDemoStoryboardVideoPlan();
   testSlackManifestExporter();
   testSlackSubmissionAudit();
   testDeploymentGatePrinter();
