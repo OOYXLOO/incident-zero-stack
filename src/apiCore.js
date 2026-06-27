@@ -43,7 +43,13 @@ function normalizeEndpoint(pathname) {
   return pathname.replace(/^\/+/, "");
 }
 
-function handleApiRequest({ method = "GET", pathname = "", searchParams = new URLSearchParams(), bodyText = "" }) {
+function handleApiRequest({
+  method = "GET",
+  pathname = "",
+  searchParams = new URLSearchParams(),
+  bodyText = "",
+  contentType = ""
+}) {
   const endpoint = normalizeEndpoint(pathname);
 
   if (endpoint === "case" && method === "GET") {
@@ -79,8 +85,8 @@ function handleApiRequest({ method = "GET", pathname = "", searchParams = new UR
   }
 
   if (endpoint === "slack-agent" && method === "POST") {
-    const contentType = String(searchParams.get("contentType") || "");
-    if (contentType.includes("form")) {
+    const declaredType = String(contentType || searchParams.get("contentType") || "");
+    if (declaredType.includes("form")) {
       const form = new URLSearchParams(bodyText || "");
       return jsonBody(createSlackAgentResponse(parseSlackText(form.get("text") || "")));
     }

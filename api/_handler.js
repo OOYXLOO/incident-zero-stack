@@ -8,6 +8,12 @@ function readBodyText(request) {
   return "";
 }
 
+function headerValue(headers = {}, name) {
+  const target = String(name).toLowerCase();
+  const found = Object.entries(headers || {}).find(([key]) => String(key).toLowerCase() === target);
+  return found ? String(found[1] || "") : "";
+}
+
 function sendResult(response, result) {
   response.statusCode = result.status;
   response.setHeader("content-type", result.type);
@@ -30,7 +36,8 @@ function handleVercelRequest(endpoint, request, response) {
       method: method === "HEAD" ? "GET" : method,
       pathname: endpoint,
       searchParams: url.searchParams,
-      bodyText: readBodyText(request)
+      bodyText: readBodyText(request),
+      contentType: headerValue(request.headers, "content-type")
     });
     if (method === "HEAD") {
       sendHeadResult(response, result);
@@ -48,6 +55,7 @@ function handleVercelRequest(endpoint, request, response) {
 
 module.exports = {
   handleVercelRequest,
+  headerValue,
   readBodyText,
   sendHeadResult
 };

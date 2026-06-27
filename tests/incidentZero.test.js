@@ -581,7 +581,7 @@ function requestRaw(server, path, options = {}) {
   });
 }
 
-function invokeVercelFunction(fn, { method = "GET", url = "/", body } = {}) {
+function invokeVercelFunction(fn, { method = "GET", url = "/", body, headers = {} } = {}) {
   return new Promise((resolve, reject) => {
     const chunks = [];
     const response = {
@@ -601,7 +601,7 @@ function invokeVercelFunction(fn, { method = "GET", url = "/", body } = {}) {
     };
 
     try {
-      fn({ method, url, body }, response);
+      fn({ method, url, body, headers }, response);
     } catch (error) {
       reject(error);
     }
@@ -658,6 +658,13 @@ async function testHttpApi() {
     assert.equal(slackForm.status, 200);
     assert.equal(slackForm.body.metadata.scenarioId, "data");
 
+    const slackFormByHeader = await requestJson(server, "/api/slack-agent", {
+      method: "POST",
+      rawBody: "text=scenario%3Dpayments%20severity%3Dhigh%20contained%3Dfalse"
+    });
+    assert.equal(slackFormByHeader.status, 200);
+    assert.equal(slackFormByHeader.body.metadata.scenarioId, "payments");
+
     const slackHead = await requestRaw(server, "/api/slack-agent", { method: "HEAD" });
     assert.equal(slackHead.status, 200);
     assert.equal(slackHead.body, "");
@@ -707,6 +714,15 @@ async function testVercelFunctions() {
   });
   assert.equal(slackResponse.status, 200);
   assert.equal(JSON.parse(slackResponse.body).metadata.scenarioId, "data");
+
+  const slackFormResponse = await invokeVercelFunction(slackAgentFunction, {
+    method: "POST",
+    url: "/api/slack-agent",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body: "text=scenario%3Dpayments%20severity%3Dhigh%20contained%3Dfalse"
+  });
+  assert.equal(slackFormResponse.status, 200);
+  assert.equal(JSON.parse(slackFormResponse.body).metadata.scenarioId, "payments");
 
   const slackHeadResponse = await invokeVercelFunction(slackAgentFunction, {
     method: "HEAD",

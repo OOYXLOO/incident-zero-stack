@@ -67,7 +67,8 @@ async function handleRequest(request, response) {
         method: method === "HEAD" ? "GET" : method,
         pathname: url.pathname,
         searchParams: url.searchParams,
-        bodyText: await readBodyText(request)
+        bodyText: await readBodyText(request),
+        contentType: request.headers["content-type"] || ""
       });
       if (method === "HEAD") {
         sendHead(response, result.status, result.type);
