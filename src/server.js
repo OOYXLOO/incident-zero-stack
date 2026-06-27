@@ -25,6 +25,14 @@ function send(response, status, body, type = "text/plain; charset=utf-8") {
   response.end(body);
 }
 
+function sendHead(response, status, type = "text/plain; charset=utf-8") {
+  response.writeHead(status, {
+    "content-type": type,
+    "cache-control": "no-store"
+  });
+  response.end("");
+}
+
 function sendJson(response, status, body) {
   send(response, status, JSON.stringify(body, null, 2), "application/json; charset=utf-8");
 }
@@ -54,12 +62,17 @@ async function handleRequest(request, response) {
 
   if (url.pathname.startsWith("/api/")) {
     try {
+      const method = request.method || "GET";
       const result = handleApiRequest({
-        method: request.method,
+        method: method === "HEAD" ? "GET" : method,
         pathname: url.pathname,
         searchParams: url.searchParams,
         bodyText: await readBodyText(request)
       });
+      if (method === "HEAD") {
+        sendHead(response, result.status, result.type);
+        return;
+      }
       send(response, result.status, result.body, result.type);
     } catch (error) {
       sendJson(response, 400, { ok: false, error: error.message });

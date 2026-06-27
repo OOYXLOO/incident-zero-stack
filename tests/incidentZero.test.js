@@ -540,6 +540,33 @@ function requestJson(server, path, options = {}) {
   });
 }
 
+function requestRaw(server, path, options = {}) {
+  const body = options.rawBody !== undefined ? options.rawBody : (options.body ? JSON.stringify(options.body) : null);
+  return new Promise((resolve, reject) => {
+    const request = http.request({
+      hostname: "127.0.0.1",
+      port: server.address().port,
+      path,
+      method: options.method || "GET",
+      headers: body ? {
+        "content-type": "application/json",
+        "content-length": Buffer.byteLength(body)
+      } : undefined
+    }, (response) => {
+      let data = "";
+      response.on("data", (chunk) => {
+        data += chunk;
+      });
+      response.on("end", () => {
+        resolve({ status: response.statusCode, body: data });
+      });
+    });
+    request.on("error", reject);
+    if (body) request.write(body);
+    request.end();
+  });
+}
+
 function invokeVercelFunction(fn, { method = "GET", url = "/", body } = {}) {
   return new Promise((resolve, reject) => {
     const chunks = [];
@@ -616,6 +643,10 @@ async function testHttpApi() {
     });
     assert.equal(slackForm.status, 200);
     assert.equal(slackForm.body.metadata.scenarioId, "data");
+
+    const slackHead = await requestRaw(server, "/api/slack-agent", { method: "HEAD" });
+    assert.equal(slackHead.status, 200);
+    assert.equal(slackHead.body, "");
 
     const verification = await runPublicVerification(`http://127.0.0.1:${server.address().port}`);
     assert.deepEqual(verification.map((result) => result.ok), verification.map(() => true));
