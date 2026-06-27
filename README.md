@@ -44,6 +44,7 @@ POST /api/slack-agent
 
 Slack agent handoff notes are maintained in [docs/slack_agent_handoff.md](docs/slack_agent_handoff.md).
 Slack challenge submission notes are maintained in [docs/slack_challenge_submission_pack.md](docs/slack_challenge_submission_pack.md).
+H0 submission notes are maintained in [docs/h0_submission_pack.md](docs/h0_submission_pack.md).
 Demo-video production notes are maintained in [docs/demo_video_production_pack.md](docs/demo_video_production_pack.md).
 Slack architecture diagram assets are maintained in [docs/slack-agent-architecture.svg](docs/slack-agent-architecture.svg) and [docs/slack_agent_architecture.md](docs/slack_agent_architecture.md).
 Account-owner deployment notes are maintained in [docs/account-owner-deployment-runbook.md](docs/account-owner-deployment-runbook.md).
@@ -52,6 +53,7 @@ After deploying a public HTTPS API, generate an import-ready Slack manifest with
 
 ```bash
 npm run print:deployment-gates -- --public-url https://incident-zero-stack.vercel.app
+npm run audit:h0-submission -- --public-url https://incident-zero-stack.vercel.app
 npm run export:slack-manifest -- --public-url https://incident-zero-stack.vercel.app
 ```
 

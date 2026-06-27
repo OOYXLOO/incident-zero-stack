@@ -41,9 +41,11 @@ const REQUIRED_FILES = [
   "scripts/verify-public.js",
   "scripts/verify-static-review.js",
   "scripts/verify-dynamodb-live.js",
+  "scripts/audit-h0-submission.js",
   "docs/architecture.svg",
   "docs/demo_video_script.md",
   "docs/devpost_field_pack.md",
+  "docs/h0_submission_pack.md",
   "docs/release_readiness.md",
   "docs/slack_agent_handoff.md",
   "docs/vercel_deployment_notes.md"
@@ -75,6 +77,7 @@ const SYNTAX_CHECK_FILES = [
   "scripts/verify-public.js",
   "scripts/verify-static-review.js",
   "scripts/verify-dynamodb-live.js",
+  "scripts/audit-h0-submission.js",
   "scripts/audit-local-readiness.js",
   "tests/incidentZero.test.js"
 ];
