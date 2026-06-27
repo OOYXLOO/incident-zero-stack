@@ -56,6 +56,7 @@ function checkSlackManifest(publicUrl) {
 
 function checkStaticReviewLinks() {
   const review = readRel("public/slack-agent-review.html");
+  const decision = readRel("public/slack-reviewer-decision.html");
   const preview = readRel("public/slack-message-preview.html");
   const storyboard = readRel("public/demo-storyboard.html");
   const requiredReviewText = [
@@ -69,6 +70,13 @@ function checkStaticReviewLinks() {
     "Open handoff",
     "Public prototype boundary"
   ];
+  const requiredDecisionText = [
+    "Incident Zero Agent reviewer decision brief",
+    "Decision in 30 seconds",
+    "Slash-command endpoint",
+    "MCP handoff",
+    "Remaining gates"
+  ];
   const requiredStoryboardText = [
     "Record the Slack Agent Builder demo",
     "/incident-zero scenario=identity severity=critical",
@@ -77,10 +85,11 @@ function checkStaticReviewLinks() {
   ];
   const missing = [
     ...requiredReviewText.filter((item) => !review.includes(item)),
+    ...requiredDecisionText.filter((item) => !decision.includes(item)),
     ...requiredPreviewText.filter((item) => !preview.includes(item)),
     ...requiredStoryboardText.filter((item) => !storyboard.includes(item))
   ];
-  return missing.length ? fail("static-review-links", `missing: ${missing.join(", ")}`) : pass("static-review-links", "review, storyboard, and Slack preview linked");
+  return missing.length ? fail("static-review-links", `missing: ${missing.join(", ")}`) : pass("static-review-links", "review, decision brief, storyboard, and Slack preview linked");
 }
 
 function checkFinalJudgePage() {

@@ -104,6 +104,12 @@ Slack agent judge-facing review page:
 https://ooyxloo.github.io/incident-zero-stack/slack-agent-review.html
 ```
 
+Slack reviewer decision brief:
+
+```text
+https://incident-zero-stack.vercel.app/slack-reviewer-decision
+```
+
 Static Slack message preview:
 
 ```text
